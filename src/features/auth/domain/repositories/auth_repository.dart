@@ -18,7 +18,7 @@ class ListAuthRepository implements AuthRepository {
 
   @override
   User? getUserByEmail(String email) {
-    return list.first;
+    return list.firstOrNull;
   }
 
   @override

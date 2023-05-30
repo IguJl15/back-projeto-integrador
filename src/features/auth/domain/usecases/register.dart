@@ -17,9 +17,13 @@ class RegisterUseCase {
     required this.tolkien,
   });
 
-  call(RegisterUserDto registerUserDto) {
+  String call(RegisterUserDto registerUserDto) {
     registerUserDto.validate();
     //gerar hash da senha
+
+    final existingUser = authRepository.getUserByEmail(registerUserDto.email);
+    if (existingUser != null) throw EmailAlreadyInUse();
+
     final salt = hasher.generateSalt();
     String hashPassword = hasher.hashPassword(registerUserDto.password, salt);
     //criar um novo CreateUserDto
