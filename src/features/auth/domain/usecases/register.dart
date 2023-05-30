@@ -1,36 +1,37 @@
+import '../dto/create_user_dto.dart';
+import '../dto/register_user_dto.dart';
 import '../errors/errors.dart';
+import '../models/user.dart';
+import '../repositories/auth_repository.dart';
+import '../utils/hasher.dart';
+import '../utils/tolkien.dart';
 
 class RegisterUseCase {
-  // final AuthRepository _authRepository;
-  final fullNameRegex = RegExp(r"^[a-zA-Z\u00C0-\u00FF\s']+$");
-  final emailRegex = RegExp(
-      r"""(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])""");
-  final phoneRegex =
-      RegExp(r"^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$");
-  final passwordRegex = RegExp(
-      r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
+  final Hasher hasher;
+  final AuthRepository authRepository;
+  final Tolkien tolkien;
 
-  call(
-    String fullName,
-    String email,
-    String? phone,
-    String password,
-    String confirmedPassword,
-  ) {
-    if (!fullNameRegex.hasMatch(fullName)) {
-      throw AuthValidationError(
-          'Full name', 'The should not contains special characters');
-    } else if (!emailRegex.hasMatch(email)) {
-      throw AuthValidationError('Email', 'The email is invalid');
-    } else if (phone != null && !phoneRegex.hasMatch(phone)) {
-      throw AuthValidationError('Phone', 'The phone is invalid');
-    } else if (password != confirmedPassword) {
-      throw AuthValidationError(
-          'Password', "The password and confirmed password don't match");
-    } else if (passwordRegex.hasMatch(password)) {
-      throw AuthValidationError('Password', 'The password is weak like you');
-    }
+  RegisterUseCase({
+    required this.authRepository,
+    required this.hasher,
+    required this.tolkien,
+  });
+
+  call(RegisterUserDto registerUserDto) {
+    registerUserDto.validate();
+    //gerar hash da senha
+    final salt = hasher.generateSalt();
+    String hashPassword = hasher.hashPassword(registerUserDto.password, salt);
+    //criar um novo CreateUserDto
+    final createUserDto = CreateUserDto(
+      registerUserDto.fullName,
+      registerUserDto.email,
+      registerUserDto.phone,
+      '$salt.$hashPassword',
+    );
+    //salvar o dto no bd
+    final User newUser = authRepository.saveUser(createUserDto);
+    //gerar e retornar tokens JWT
+    return tolkien.sign(newUser.toJwtMap());
   }
 }
-
-abstract class AuthRepository {}

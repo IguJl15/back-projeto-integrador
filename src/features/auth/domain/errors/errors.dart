@@ -10,3 +10,7 @@ class AuthValidationError extends AuthError {
 
   AuthValidationError(this.field, this.error) : super('');
 }
+
+class UserNotFound extends AuthError {
+  UserNotFound(super.message);
+}
