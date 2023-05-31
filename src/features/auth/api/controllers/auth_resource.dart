@@ -2,39 +2,35 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
+import 'package:shelf_modular/shelf_modular.dart';
 
 import '../../domain/dto/register_user_dto.dart';
 import '../../domain/errors/errors.dart';
 import '../../domain/usecases/login.dart';
 import '../../domain/usecases/register.dart';
 
-class AuthController {
-  final RegisterUseCase registerUseCase;
-  final Login loginUseCase;
+class AuthResource extends Resource {
+  AuthResource();
 
-  AuthController(
-    this.registerUseCase,
-    this.loginUseCase,
-  );
+  @override
+  get routes => [
+        Route.get('/register', register),
+        Route.get('/login', login),
+      ];
 
-  static Router getRoute(AuthController controller) => Router()
-    ..get('/register', controller.register)
-    ..get('/login', controller.login);
-
-  Future<Response> login(Request req) async {
-    final body = await req.readAsString();
-    final bodyMap = jsonDecode(body);
+  Future<Response> login(ModularArguments args, Injector injector) async {
+    final body = args.data;
+    final loginUseCase = injector<Login>();
 
     try {
-      final usecaseResponse = loginUseCase(bodyMap['email'], bodyMap['password']);
+      final usecaseResponse = loginUseCase(body['email'], body['password']);
 
-      return Response(HttpStatus.created,
-          body: jsonEncode(
-            {
-              "accessToken": usecaseResponse,
-            },
-          ));
+      return Response(
+        HttpStatus.created,
+        body: jsonEncode({
+          "accessToken": usecaseResponse,
+        }),
+      );
     } on AuthValidationError catch (e) {
       return Response(
         e.statusCode,
@@ -56,18 +52,16 @@ class AuthController {
     }
   }
 
-  @Route.get('register')
-  Future<Response> register(Request req) async {
-    final body = await req.readAsString();
-    final bodyMap = jsonDecode(body);
+  Future<Response> register(ModularArguments args, Injector injector) async {
+    final registerUseCase = injector<RegisterUseCase>();
 
     try {
       final registerDto = RegisterUserDto(
-        bodyMap['fullName'] ?? '',
-        bodyMap['email'] ?? '',
-        bodyMap['phone'],
-        bodyMap['password'] ?? '',
-        bodyMap['confirmedPassword'] ?? '',
+        args.data['fullName'] ?? '',
+        args.data['email'] ?? '',
+        args.data['phone'],
+        args.data['password'] ?? '',
+        args.data['confirmedPassword'] ?? '',
       );
 
       final usecaseResponse = registerUseCase(registerDto);
