@@ -5,6 +5,8 @@ abstract class AuthError {
   final String error;
 
   AuthError(this.statusCode, this.error);
+
+  Map<String, dynamic> toMap() => {"title": error};
 }
 
 class AuthValidationError extends AuthError {
@@ -12,10 +14,17 @@ class AuthValidationError extends AuthError {
   final String detail;
 
   AuthValidationError(this.field, this.detail) : super(HttpStatus.badRequest, "Campo Inválido");
+
+  @override
+  Map<String, dynamic> toMap() => {
+        "title": error,
+        "field": field,
+        "message": detail,
+      };
 }
 
 class UserNotFound extends AuthError {
-  UserNotFound(String message) : super(HttpStatus.notFound, message);
+  UserNotFound(String? message) : super(HttpStatus.notFound, message ?? "User not found");
 }
 
 class EmailAlreadyInUse extends AuthError {

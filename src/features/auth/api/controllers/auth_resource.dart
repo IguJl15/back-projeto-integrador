@@ -31,23 +31,10 @@ class AuthResource extends Resource {
           "accessToken": usecaseResponse,
         }),
       );
-    } on AuthValidationError catch (e) {
-      return Response(
-        e.statusCode,
-        body: jsonEncode({
-          "error": {
-            "title": e.error,
-            "field": e.field,
-            "message": e.detail,
-          },
-        }),
-      );
     } on AuthError catch (e) {
       return Response(
         e.statusCode,
-        body: jsonEncode({
-          "error": {"title": e.error},
-        }),
+        body: jsonEncode({"error": e.toMap()}),
       );
     }
   }
@@ -56,13 +43,7 @@ class AuthResource extends Resource {
     final registerUseCase = injector<RegisterUseCase>();
 
     try {
-      final registerDto = RegisterUserDto(
-        args.data['fullName'] ?? '',
-        args.data['email'] ?? '',
-        args.data['phone'],
-        args.data['password'] ?? '',
-        args.data['confirmedPassword'] ?? '',
-      );
+      final registerDto = RegisterUserDto.fromMap(args.data);
 
       final usecaseResponse = registerUseCase(registerDto);
 
@@ -72,22 +53,11 @@ class AuthResource extends Resource {
               "accessToken": usecaseResponse,
             },
           ));
-    } on AuthValidationError catch (e) {
-      return Response(
-        e.statusCode,
-        body: jsonEncode({
-          "error": {
-            "title": e.error,
-            "field": e.field,
-            "message": e.detail,
-          },
-        }),
-      );
     } on AuthError catch (e) {
       return Response(
         e.statusCode,
         body: jsonEncode({
-          "error": {"title": e.error},
+          "error": e.toMap(),
         }),
       );
     }
