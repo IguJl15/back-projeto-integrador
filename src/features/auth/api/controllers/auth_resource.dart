@@ -18,8 +18,8 @@ class AuthResource extends Resource {
         Route.get('/login', login),
       ];
 
-  Future<Response> login(ModularArguments args, Injector injector) async {
-    final body = args.data;
+  Future<Response> login(Request request, Injector injector) async {
+    final body = jsonDecode(await request.readAsString());
     final loginUseCase = injector<Login>();
 
     try {
@@ -27,9 +27,7 @@ class AuthResource extends Resource {
 
       return Response(
         HttpStatus.created,
-        body: jsonEncode({
-          "accessToken": usecaseResponse,
-        }),
+        body: jsonEncode(usecaseResponse.toMap()),
       );
     } on AuthError catch (e) {
       return Response(
@@ -39,20 +37,18 @@ class AuthResource extends Resource {
     }
   }
 
-  Future<Response> register(ModularArguments args, Injector injector) async {
+  Future<Response> register(Request request, Injector injector) async {
     final registerUseCase = injector<RegisterUseCase>();
 
     try {
-      final registerDto = RegisterUserDto.fromMap(args.data);
+      final registerDto = RegisterUserDto.fromMap(jsonDecode(await request.readAsString()));
 
       final usecaseResponse = registerUseCase(registerDto);
 
-      return Response(HttpStatus.created,
-          body: jsonEncode(
-            {
-              "accessToken": usecaseResponse,
-            },
-          ));
+      return Response(
+        HttpStatus.created,
+        body: jsonEncode(usecaseResponse.toMap()),
+      );
     } on AuthError catch (e) {
       return Response(
         e.statusCode,
