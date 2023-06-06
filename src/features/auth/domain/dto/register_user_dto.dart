@@ -37,6 +37,6 @@ class RegisterUserDto {
         data['email'] ?? '',
         data['phone'],
         data['password'] ?? '',
-        data['confirmedPassword'] ?? '',
+        data['passwordConfirmation'] ?? '',
       );
 }

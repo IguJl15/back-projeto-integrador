@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
+import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 
 import '../src/app_module.dart';
@@ -11,7 +12,7 @@ void main(List<String> args) async {
   final ip = InternetAddress.anyIPv4;
 
   final modularHandler = Modular(
-    middlewares: [logRequests()],
+    middlewares: [logRequests(), corsHeaders()],
     module: AppModule(),
   );
 
