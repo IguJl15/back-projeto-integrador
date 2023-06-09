@@ -6,6 +6,7 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 
 import '../src/app_module.dart';
+import '../src/core/database/database.dart';
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
@@ -15,6 +16,8 @@ void main(List<String> args) async {
     middlewares: [logRequests(), corsHeaders()],
     module: AppModule(),
   );
+
+  DatabaseConnection.instance.openConnection();
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');

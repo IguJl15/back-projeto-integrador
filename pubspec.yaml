@@ -2,10 +2,9 @@ name: back_projeto_integrador
 description: A server app using the shelf package and Docker.
 publish_to: none
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: '>=3.0.0'
 
 dependencies:
   args: ^2.3.0
@@ -14,6 +13,7 @@ dependencies:
   shelf_modular: ^2.1.0
   shelf_cors_headers: ^0.1.5
   uuid: ^3.0.7
+  postgres: ^2.6.1
   password_hash:
     git:
       url: https://github.com/Jay-Tezsure/dart-password-hash.git
