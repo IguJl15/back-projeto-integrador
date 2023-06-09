@@ -16,8 +16,8 @@ class Login {
     required this.hasher,
   });
 
-  AuthTokens call(String email, String password) {
-    User? user = authRepository.getUserByEmail(email);
+  Future<AuthTokens> call(String email, String password) async {
+    User? user = await authRepository.getUserByEmail(email);
 
     if (user == null) {
       throw UserNotFound('User not found');

@@ -23,7 +23,7 @@ class AuthResource extends Resource {
     final loginUseCase = injector<Login>();
 
     try {
-      final usecaseResponse = loginUseCase(body['email'], body['password']);
+      final usecaseResponse = await loginUseCase(body['email'], body['password']);
 
       return Response(
         HttpStatus.created,
@@ -43,7 +43,7 @@ class AuthResource extends Resource {
     try {
       final registerDto = RegisterUserDto.fromMap(jsonDecode(await request.readAsString()));
 
-      final usecaseResponse = registerUseCase(registerDto);
+      final usecaseResponse = await registerUseCase(registerDto);
 
       return Response(
         HttpStatus.created,

@@ -7,7 +7,7 @@ class GetUserByIdQuery extends QueryParser<UserDataModel> {
 
   GetUserByIdQuery({required String id})
       : super(
-          queryString: "SELECT * FROM user_ where user_.id = @id",
+          queryString: "SELECT * FROM $_tableName where $_tableName.id = @id",
           variables: {'@id': id},
         );
 
@@ -16,7 +16,6 @@ class GetUserByIdQuery extends QueryParser<UserDataModel> {
     final uniqueRow = dbResult.singleOrNull;
     if (uniqueRow == null) throw UserNotFound(null);
 
-    final _tableName = "systemuser";
     return UserDataModel(
       id: uniqueRow[_tableName]?['user_id'],
       fullName: uniqueRow[_tableName]?['complete_name'],

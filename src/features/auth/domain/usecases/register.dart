@@ -18,11 +18,11 @@ class RegisterUseCase {
     required this.tolkien,
   });
 
-  AuthTokens call(RegisterUserDto registerUserDto) {
+  Future<AuthTokens> call(RegisterUserDto registerUserDto) async {
     registerUserDto.validate();
     //gerar hash da senha
 
-    final existingUser = authRepository.getUserByEmail(registerUserDto.email);
+    final existingUser = await authRepository.getUserByEmail(registerUserDto.email);
     if (existingUser != null) throw EmailAlreadyInUse();
 
     final salt = hasher.generateSalt();
@@ -35,7 +35,7 @@ class RegisterUseCase {
       '$salt.$hashPassword',
     );
     //salvar o dto no bd
-    final User newUser = authRepository.saveUser(createUserDto);
+    final User newUser = await authRepository.saveUser(createUserDto);
     //gerar e retornar tokens JWT
     final accessToken = tolkien.sign(newUser.toJwtMap(), Duration(minutes: 30));
     final refreshToken = tolkien.newRefreshJwtToken();

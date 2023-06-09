@@ -20,7 +20,7 @@ class User extends BaseModel {
     this.completeHash,
   );
 
-  toJwtMap() {
+  Map<String, dynamic> toJwtMap() {
     return {
       "sub": id,
       "email": email,

@@ -11,7 +11,7 @@ class Tolkien {
   String sign(Map<String, dynamic> payload, Duration expiresIn) {
     if (!payload.containsKey("jti")) payload["jti"] = uuAidi.generateV4();
 
-    final jwt = JWT(payload,);
+    final jwt = JWT(payload);
 
     return jwt.sign(SecretKey(secret), expiresIn: expiresIn);
   }
