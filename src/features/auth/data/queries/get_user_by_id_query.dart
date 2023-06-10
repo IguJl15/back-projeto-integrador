@@ -2,14 +2,19 @@ import '../../../../core/database/query_parser.dart';
 import '../../domain/errors/errors.dart';
 import '../data_models/user_data_model.dart';
 
-class GetUserByIdQuery extends QueryParser<UserDataModel> {
+final class GetUserByIdQuery implements QueryParser<UserDataModel> {
   static const _tableName = "systemuser";
 
+  @override
+  final String queryString = "SELECT * FROM $_tableName where $_tableName.user_id = @id";
+
+  @override
+  final Map<String, dynamic> variables;
+
   GetUserByIdQuery({required String id})
-      : super(
-          queryString: "SELECT * FROM $_tableName where $_tableName.id = @id",
-          variables: {'@id': id},
-        );
+      : variables = {
+          'id': id,
+        };
 
   @override
   UserDataModel fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {

@@ -1,14 +1,18 @@
 import '../../../../core/database/query_parser.dart';
 import '../data_models/user_data_model.dart';
 
-class GetUsersByEmailQuery extends QueryParser<List<UserDataModel>> {
+final class GetUsersByEmailQuery implements QueryParser<List<UserDataModel>> {
   static const _tableName = "systemuser";
 
+  @override
+  final String queryString = "SELECT * FROM $_tableName where $_tableName.email = @email";
+  @override
+  final Map<String, dynamic> variables;
+
   GetUsersByEmailQuery({required String email})
-      : super(
-          queryString: "SELECT * FROM $_tableName where $_tableName.email = @email",
-          variables: {'email': email},
-        );
+      : variables = {
+          'email': email,
+        };
 
   @override
   List<UserDataModel> fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {

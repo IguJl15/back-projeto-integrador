@@ -8,7 +8,7 @@ import '../queries/create_user_query.dart';
 import '../queries/get_user_by_id_query.dart';
 import '../queries/get_users_by_email_query.dart';
 
-class AuthRepositoryImpl implements AuthRepository {
+final class AuthRepositoryImpl implements AuthRepository {
   DatabaseConnection dbConnection;
 
   AuthRepositoryImpl({

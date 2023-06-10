@@ -2,26 +2,28 @@ import '../../../../core/database/query_parser.dart';
 import '../../domain/errors/errors.dart';
 import '../data_models/user_data_model.dart';
 
-class CreateUserQuery extends QueryParser<UserDataModel> {
+final class CreateUserQuery implements QueryParser<UserDataModel> {
   static const _tableName = "systemuser";
+
+  @override
+  final String queryString = """
+INSERT INTO $_tableName (complete_name, email, phone_number, password_hash)
+    values (@fullName, @email, @phone, @passwordHash) returning *;
+""";
+  @override
+  final Map<String, dynamic> variables;
 
   CreateUserQuery({
     required String fullName,
     required String email,
     required String? phone,
     required String passwordHash,
-  }) : super(
-          queryString: """
-INSERT INTO $_tableName (complete_name, email, phone_number, password_hash)
-    values (@fullName, @email, @phone, @passwordHash) returning *;
-""",
-          variables: {
-            'fullName': fullName,
-            'email': email,
-            'phone': phone ?? 'null',
-            'passwordHash': passwordHash,
-          },
-        );
+  }) : variables = {
+          'fullName': fullName,
+          'email': email,
+          'phone': phone ?? 'null',
+          'passwordHash': passwordHash,
+        };
 
   @override
   UserDataModel fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {

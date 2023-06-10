@@ -1,6 +1,6 @@
 import 'dart:io';
 
-abstract class AuthError {
+base class AuthError {
   final int statusCode;
   final String error;
 
@@ -9,7 +9,7 @@ abstract class AuthError {
   Map<String, dynamic> toMap() => {"title": error};
 }
 
-class AuthValidationError extends AuthError {
+final class AuthValidationError extends AuthError {
   final String field;
   final String detail;
 
@@ -23,10 +23,10 @@ class AuthValidationError extends AuthError {
       };
 }
 
-class UserNotFound extends AuthError {
+final class UserNotFound extends AuthError {
   UserNotFound(String? message) : super(HttpStatus.notFound, message ?? "User not found");
 }
 
-class EmailAlreadyInUse extends AuthError {
+final class EmailAlreadyInUse extends AuthError {
   EmailAlreadyInUse() : super(HttpStatus.badRequest, "Este email ja está em uso");
 }
