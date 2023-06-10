@@ -1,18 +1,20 @@
+import 'dart:io';
+
 import 'package:password_hash/password_hash.dart';
-import 'package:password_hash/salt.dart';
+
+import '../../../bin/env.dart';
 
 class Hasher {
-  static const saltLength = 8;
-  static const passwordHashLength = 32;
-  static const rounds = 2000;
+  final saltLength = Env().passwordSaltLength;
+  final passwordHashLength = Env().passwordHashLength;
+  final rounds = Env().passwordHashRounds;
 
   String generateSalt() {
     return Salt.generateAsBase64String(saltLength);
   }
 
   String hashPassword(String password, String salt) {
-    final hash =
-        PBKDF2().generateBase64Key(password, salt, rounds, passwordHashLength);
+    final hash = PBKDF2().generateBase64Key(password, salt, rounds, passwordHashLength);
 
     return hash;
   }

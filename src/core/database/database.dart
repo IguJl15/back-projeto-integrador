@@ -1,31 +1,37 @@
+import 'dart:io';
+
 import 'package:postgres/postgres.dart';
 
+import '../../../bin/env.dart';
 import 'query_parser.dart';
 
 class DatabaseConnection {
-  static const String database = "proj_integrador_dev";
-  static const String host = "localhost";
-  static const int port = 5432;
-  static const String user = "postgres";
-  static const String password = "postgres";
+  final String database = Env().databaseName;
+  final String host = Env().databaseHost;
+  final int port = Env().databasePort;
+  final String user = Env().databaseUser;
+  final String password = Env().databasePassword;
 
-  final postgresConnection = PostgreSQLConnection(
-    host,
-    port,
-    database,
-    username: user,
-    password: password,
-    allowClearTextPassword: true,
-  );
+  PostgreSQLConnection? postgresConnection;
 
-  static final instance = DatabaseConnection._();
+  static DatabaseConnection? _instance;
+  static DatabaseConnection get instance => _instance ??= DatabaseConnection._();
 
   DatabaseConnection._();
 
   Future<void> openConnection() async {
-    if (!postgresConnection.isClosed) return;
+    if (postgresConnection != null && !postgresConnection!.isClosed) return;
 
-    postgresConnection.open().then(
+    postgresConnection = PostgreSQLConnection(
+      host,
+      port,
+      database,
+      username: user,
+      password: password,
+      allowClearTextPassword: true,
+    );
+
+    postgresConnection!.open().then(
       (value) {
         print("CONECTADO AO BANCO DE DADOS POSTGRES");
       },
@@ -34,13 +40,13 @@ class DatabaseConnection {
   }
 
   Future<void> closeConnection() async {
-    if (postgresConnection.isClosed) return;
+    if (postgresConnection == null || postgresConnection!.isClosed) return;
 
-    await postgresConnection.close();
+    await postgresConnection!.close();
   }
 
   Future<T> query<T>(QueryParser<T> query) async {
-    final rows = await postgresConnection.mappedResultsQuery(query.queryString, substitutionValues: query.variables);
+    final rows = await postgresConnection!.mappedResultsQuery(query.queryString, substitutionValues: query.variables);
     return query.fromDbRowsMaps(rows);
   }
 }

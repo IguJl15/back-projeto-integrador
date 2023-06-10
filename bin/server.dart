@@ -7,20 +7,20 @@ import 'package:shelf_modular/shelf_modular.dart';
 
 import '../src/app_module.dart';
 import '../src/core/database/database.dart';
+import 'env.dart';
 
 void main(List<String> args) async {
-  // Use any available host or container IP (usually `0.0.0.0`).
-  final ip = InternetAddress.anyIPv4;
+  await DatabaseConnection.instance.openConnection();
 
   final modularHandler = Modular(
     middlewares: [logRequests(), corsHeaders()],
     module: AppModule(),
   );
 
-  await DatabaseConnection.instance.openConnection();
+  // Use any available host or container IP (usually `0.0.0.0`).
+  final ip = InternetAddress.anyIPv4;
 
-  // For running in containers, we respect the PORT environment variable.
-  final port = int.parse(Platform.environment['PORT'] ?? '8080');
+  final port = Env().port ?? 8080;
   final server = await serve(modularHandler, ip, port);
   print('Server listening on $ip with port ${server.port}');
 }

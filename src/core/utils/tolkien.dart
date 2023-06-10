@@ -1,11 +1,12 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
+import '../../../bin/env.dart';
 import '../../features/auth/domain/errors/errors.dart';
 import 'uu_aidi.dart';
 
 class Tolkien {
   final UuAidi uuAidi;
-  static const secret = "my super secret";
+  final secret = Env().apiSecret;
 
   Tolkien({required this.uuAidi});
 
