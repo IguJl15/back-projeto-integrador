@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:password_hash/password_hash.dart';
 
-import '../../../bin/env.dart';
+import '../env/env.dart';
 
 class Hasher {
   final saltLength = Env().passwordSaltLength;

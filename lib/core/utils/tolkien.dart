@@ -1,7 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-import '../../../bin/env.dart';
 import '../../features/auth/domain/errors/errors.dart';
+import '../env/env.dart';
 import 'uu_aidi.dart';
 
 class Tolkien {

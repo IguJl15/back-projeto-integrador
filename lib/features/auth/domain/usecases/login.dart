@@ -1,8 +1,8 @@
+import '../../../../core/utils/hasher.dart';
 import '../errors/errors.dart';
 import '../models/auth_tokens.dart';
 import '../models/user.dart';
 import '../repositories/auth_repository.dart';
-import '../../../../core/utils/hasher.dart';
 import 'create_and_save_tokens.dart';
 
 class Login {

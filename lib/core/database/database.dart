@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:postgres/postgres.dart';
 
-import '../../../bin/env.dart';
+import '../env/env.dart';
 import 'query_parser.dart';
 
 class DatabaseConnection {

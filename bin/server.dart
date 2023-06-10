@@ -5,9 +5,10 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 
-import '../src/app_module.dart';
-import '../src/core/database/database.dart';
-import 'env.dart';
+import 'package:back_projeto_integrador/app_module.dart';
+import 'package:back_projeto_integrador/core/database/database.dart';
+
+import 'package:back_projeto_integrador/core/env/env.dart';
 
 void main(List<String> args) async {
   await DatabaseConnection.instance.openConnection();
