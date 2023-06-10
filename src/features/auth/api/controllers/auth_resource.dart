@@ -14,8 +14,9 @@ class AuthResource extends Resource {
 
   @override
   get routes => [
-        Route.get('/register', register),
-        Route.get('/login', login),
+        Route.post('/register', register),
+        Route.post('/login', login),
+        Route.post('/refresh', refreshTokens),
       ];
 
   Future<Response> login(Request request, Injector injector) async {
@@ -55,6 +56,24 @@ class AuthResource extends Resource {
         body: jsonEncode({
           "error": e.toMap(),
         }),
+      );
+    }
+  }
+
+  Future<Response> refreshTokens(ModularArguments args, Injector injector) async {
+    final refreshToken = injector<RefreshTokenUseCase>();
+
+    try {
+      final usecaseResult = await refreshToken(args.data['refreshToken'] ?? "");
+
+      return Response(
+        HttpStatus.ok,
+        body: jsonEncode(usecaseResult.toMap()),
+      );
+    } on AuthError catch (e) {
+      return Response(
+        e.statusCode,
+        body: jsonEncode({"error": e.toMap()}),
       );
     }
   }

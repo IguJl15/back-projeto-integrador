@@ -30,3 +30,7 @@ final class UserNotFound extends AuthError {
 final class EmailAlreadyInUse extends AuthError {
   EmailAlreadyInUse() : super(HttpStatus.badRequest, "Este email ja está em uso");
 }
+
+final class JwtError extends AuthError {
+  JwtError(String message) : super(401, message);
+}

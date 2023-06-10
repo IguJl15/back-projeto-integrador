@@ -11,5 +11,5 @@ abstract interface class AuthRepository {
 
   // user tokens
   Future<void> saveRefreshToken(String jti, String userId);
-
+  Future<void> deleteToken(String jwtId);
 }

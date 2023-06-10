@@ -1,5 +1,6 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
+import '../../features/auth/domain/errors/errors.dart';
 import 'uu_aidi.dart';
 
 class Tolkien {
@@ -8,6 +9,17 @@ class Tolkien {
 
   Tolkien({required this.uuAidi});
 
+  void verify(String token) {
+    try {
+      JWT.verify(token, SecretKey(secret));
+    } on JWTException catch (e) {
+      throw JwtError(e.message);
+    }
+  }
+
+  Map<String, dynamic> getPayload(String token) {
+    return JWT.decode(token).payload;
+  }
 
   ({String token, String jti}) sign(Map<String, dynamic> payload, Duration expiresIn) {
     final jti = payload["jti"] ??= uuAidi.generateV4();
