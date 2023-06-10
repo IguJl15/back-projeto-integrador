@@ -17,7 +17,7 @@ void main(List<String> args) async {
     module: AppModule(),
   );
 
-  DatabaseConnection.instance.openConnection();
+  await DatabaseConnection.instance.openConnection();
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');

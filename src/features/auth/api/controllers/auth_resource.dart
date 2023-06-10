@@ -7,6 +7,7 @@ import 'package:shelf_modular/shelf_modular.dart';
 import '../../domain/dto/register_user_dto.dart';
 import '../../domain/errors/errors.dart';
 import '../../domain/usecases/login.dart';
+import '../../domain/usecases/refresh_token_usecase.dart';
 import '../../domain/usecases/register.dart';
 
 class AuthResource extends Resource {
@@ -19,12 +20,11 @@ class AuthResource extends Resource {
         Route.post('/refresh', refreshTokens),
       ];
 
-  Future<Response> login(Request request, Injector injector) async {
-    final body = jsonDecode(await request.readAsString());
+  Future<Response> login(ModularArguments args, Injector injector) async {
     final loginUseCase = injector<Login>();
 
     try {
-      final usecaseResponse = await loginUseCase(body['email'], body['password']);
+      final usecaseResponse = await loginUseCase(args.data['email'], args.data['password']);
 
       return Response(
         HttpStatus.created,
@@ -38,11 +38,11 @@ class AuthResource extends Resource {
     }
   }
 
-  Future<Response> register(Request request, Injector injector) async {
+  Future<Response> register(ModularArguments args, Injector injector) async {
     final registerUseCase = injector<RegisterUseCase>();
 
     try {
-      final registerDto = RegisterUserDto.fromMap(jsonDecode(await request.readAsString()));
+      final registerDto = RegisterUserDto.fromMap(args.data);
 
       final usecaseResponse = await registerUseCase(registerDto);
 
