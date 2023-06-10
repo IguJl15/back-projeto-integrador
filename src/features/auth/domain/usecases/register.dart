@@ -5,41 +5,38 @@ import '../models/auth_tokens.dart';
 import '../models/user.dart';
 import '../repositories/auth_repository.dart';
 import '../../../../core/utils/hasher.dart';
-import '../../../../core/utils/tolkien.dart';
+import 'create_and_save_tokens.dart';
 
 class RegisterUseCase {
-  final Hasher hasher;
+  final CreateAndSaveTokens createTokens;
   final AuthRepository authRepository;
-  final Tolkien tolkien;
+
+  final Hasher hasher;
 
   RegisterUseCase({
+    required this.createTokens,
     required this.authRepository,
     required this.hasher,
-    required this.tolkien,
   });
 
   Future<AuthTokens> call(RegisterUserDto registerUserDto) async {
     registerUserDto.validate();
-    //gerar hash da senha
 
     final existingUser = await authRepository.getUserByEmail(registerUserDto.email);
     if (existingUser != null) throw EmailAlreadyInUse();
 
     final salt = hasher.generateSalt();
     String hashPassword = hasher.hashPassword(registerUserDto.password, salt);
-    //criar um novo CreateUserDto
+
     final createUserDto = CreateUserDto(
       registerUserDto.fullName,
       registerUserDto.email,
       registerUserDto.phone,
       '$salt.$hashPassword',
     );
-    //salvar o dto no bd
-    final User newUser = await authRepository.saveUser(createUserDto);
-    //gerar e retornar tokens JWT
-    final accessToken = tolkien.sign(newUser.toJwtMap(), Duration(minutes: 30));
-    final refreshToken = tolkien.newRefreshJwtToken();
 
-    return AuthTokens(accessToken, refreshToken);
+    final User newUser = await authRepository.saveUser(createUserDto);
+
+    return await createTokens(newUser);
   }
 }

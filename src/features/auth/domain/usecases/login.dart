@@ -3,16 +3,17 @@ import '../models/auth_tokens.dart';
 import '../models/user.dart';
 import '../repositories/auth_repository.dart';
 import '../../../../core/utils/hasher.dart';
-import '../../../../core/utils/tolkien.dart';
+import 'create_and_save_tokens.dart';
 
 class Login {
+  final CreateAndSaveTokens createTokens;
   final AuthRepository authRepository;
-  final Tolkien tolkien;
+
   final Hasher hasher;
 
   Login({
+    required this.createTokens,
     required this.authRepository,
-    required this.tolkien,
     required this.hasher,
   });
 
@@ -28,9 +29,6 @@ class Login {
       throw UserNotFound('User not found');
     }
 
-    final accessToken = tolkien.sign(user.toJwtMap(), Duration(minutes: 30));
-    final refreshToken = tolkien.newRefreshJwtToken();
-
-    return AuthTokens(accessToken, refreshToken);
+    return await createTokens(user);
   }
 }
