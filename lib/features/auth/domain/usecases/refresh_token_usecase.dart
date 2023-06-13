@@ -17,7 +17,14 @@ class RefreshTokenUseCase {
   });
 
   Future<AuthTokens> call(String token) async {
-    tolkien.verify(token);
+    try {
+      tolkien.verify(token);
+    } on JwtError catch (e) {
+      if (e is JwtExpiredError) {
+        final jwtId = tolkien.getPayload(token);
+        authRepository.deleteToken(jwtId['jti']);
+      }
+    }
 
     final payload = tolkien.getPayload(token);
     authRepository.deleteToken(payload["jti"]);

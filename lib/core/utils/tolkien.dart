@@ -14,6 +14,7 @@ class Tolkien {
     try {
       JWT.verify(token, SecretKey(secret));
     } on JWTException catch (e) {
+      if (e.message.contains('expired')) throw JwtExpiredError(e.message);
       throw JwtError(e.message);
     }
   }

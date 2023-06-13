@@ -31,6 +31,10 @@ final class EmailAlreadyInUse extends AuthError {
   EmailAlreadyInUse() : super(HttpStatus.badRequest, "Este email ja está em uso");
 }
 
-final class JwtError extends AuthError {
+base class JwtError extends AuthError {
   JwtError(String message) : super(401, message);
+}
+
+final class JwtExpiredError extends JwtError {
+  JwtExpiredError(super.message);
 }
