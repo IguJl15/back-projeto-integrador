@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 
+import '../../../../core/errors/application_error.dart';
 import '../../domain/dto/register_user_dto.dart';
-import '../../domain/errors/errors.dart';
 import '../../domain/usecases/login.dart';
 import '../../domain/usecases/refresh_token_usecase.dart';
 import '../../domain/usecases/register.dart';
@@ -30,7 +30,7 @@ class AuthResource extends Resource {
         HttpStatus.created,
         body: jsonEncode(usecaseResponse.toMap()),
       );
-    } on AuthError catch (e) {
+    } on ApplicationError catch (e) {
       return Response(
         e.statusCode,
         body: jsonEncode({"error": e.toMap()}),
@@ -50,7 +50,7 @@ class AuthResource extends Resource {
         HttpStatus.created,
         body: jsonEncode(usecaseResponse.toMap()),
       );
-    } on AuthError catch (e) {
+    } on ApplicationError catch (e) {
       return Response(
         e.statusCode,
         body: jsonEncode({
@@ -70,7 +70,7 @@ class AuthResource extends Resource {
         HttpStatus.ok,
         body: jsonEncode(usecaseResult.toMap()),
       );
-    } on AuthError catch (e) {
+    } on ApplicationError catch (e) {
       return Response(
         e.statusCode,
         body: jsonEncode({"error": e.toMap()}),

@@ -1,12 +1,9 @@
 import 'dart:io';
 
-base class AuthError {
-  final int statusCode;
-  final String error;
+import '../../../../core/errors/application_error.dart';
 
-  AuthError(this.statusCode, this.error);
-
-  Map<String, dynamic> toMap() => {"title": error};
+base class AuthError extends ApplicationError {
+  AuthError(super.statusCode, super.error);
 }
 
 final class AuthValidationError extends AuthError {
