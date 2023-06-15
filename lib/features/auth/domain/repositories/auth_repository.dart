@@ -6,8 +6,8 @@ import '../models/user.dart';
 abstract interface class AuthRepository {
   // user
   FutureOr<User> saveUser(CreateUserDto createUserDto);
-  FutureOr<User?> getUser(String id);
-  FutureOr<User?> getUserByEmail(String email);
+  FutureOr<User?> getUserOrNull(String id);
+  FutureOr<User?> getUserByEmailOrNull(String email);
 
   // user tokens
   Future<void> saveRefreshToken(String jti, String userId);
