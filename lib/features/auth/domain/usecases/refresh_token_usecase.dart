@@ -24,6 +24,7 @@ class RefreshTokenUseCase {
         final jwtId = tolkien.getPayload(token);
         authRepository.deleteToken(jwtId['jti']);
       }
+      rethrow;
     }
 
     final payload = tolkien.getPayload(token);
