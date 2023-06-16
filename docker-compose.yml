@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  postgresql:
+    container_name: 'postgresql-backend'
+    image: 'bitnami/postgresql:latest'
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_POSTGRES_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=proj_integrador_dev
+    ports:
+      - '5432:5432'
+    networks: 
+      - backend
+    
+  dart-server:
+    container_name: 'dart-server'
+    build: .
+    links:
+      - "postgresql"
+    depends_on:
+      - postgresql
+    networks: 
+      - backend
+    ports:
+      - "8080:8080"
+
+networks:
+  backend:
