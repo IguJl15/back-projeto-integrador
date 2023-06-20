@@ -2,6 +2,7 @@ import '../../../../core/utils/uu_aidi.dart';
 import '../../../term/domain/models/term.dart';
 import '../../../term/domain/usecases/is_term_forbidden.dart';
 import '../../../term/domain/usecases/save_term.dart';
+import '../dtos/create_direction_dto.dart';
 import '../errors/direction_errors.dart';
 import '../models/direction.dart';
 import '../repositories/direction_repository.dart';
@@ -25,13 +26,8 @@ class CreateDirection {
     this.uuAidi,
   );
 
-  Future<String> call(
-    String userId,
-    String title,
-    String redirectEmail,
-    List<Term> terms,
-  ) async {
-    terms = await filterTerms(terms);
+  Future<String> call(CreateDirectionDto params) async {
+    final terms = await filterTerms(params.terms);
 
     final savedTerms = <Term>[];
     for (final term in terms) {
@@ -40,10 +36,11 @@ class CreateDirection {
 
     final newDirection = Direction(
       id: uuAidi.generateV4(),
-      title: title,
-      redirectEmail: redirectEmail,
+      title: params.title,
+      redirectEmail: params.redirectEmail,
       terms: savedTerms,
-      createAt: DateTime.now(),
+      userId: params.userId,
+      createdAt: DateTime.now(),
       updatedAt: null,
       deletedAt: null,
     );

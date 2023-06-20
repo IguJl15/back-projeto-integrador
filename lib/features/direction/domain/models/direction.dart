@@ -7,13 +7,16 @@ final class Direction extends BaseModel {
 
   List<Term> terms;
 
+  String userId;
+
   Direction({
     required String id,
     required this.title,
     required this.redirectEmail,
     required this.terms,
-    required DateTime createAt,
+    required this.userId,
+    required DateTime createdAt,
     required DateTime? updatedAt,
     required DateTime? deletedAt,
-  }) : super(id, createAt, updatedAt, deletedAt);
+  }) : super(id, createdAt, updatedAt, deletedAt);
 }

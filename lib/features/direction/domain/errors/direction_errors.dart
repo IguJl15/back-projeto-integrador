@@ -37,3 +37,17 @@ final class InvalidTermError extends DirectionError {
         "message": details,
       };
 }
+
+final class DirectionValidationError extends DirectionError {
+  final String field;
+  final String detail;
+
+  DirectionValidationError(this.field, this.detail) : super(HttpStatus.badRequest, "Campo Inválido");
+
+  @override
+  Map<String, dynamic> toMap() => {
+        "title": error,
+        "campo": field,
+        "erro": detail,
+      };
+}
