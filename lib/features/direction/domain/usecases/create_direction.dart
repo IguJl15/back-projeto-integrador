@@ -26,7 +26,7 @@ class CreateDirection {
     this.uuAidi,
   );
 
-  Future<String> call(CreateDirectionDto params) async {
+  Future<Direction> call(CreateDirectionDto params) async {
     final terms = await filterTerms(params.terms);
 
     final savedTerms = <Term>[];
@@ -41,8 +41,6 @@ class CreateDirection {
       terms: savedTerms,
       userId: params.userId,
       createdAt: DateTime.now(),
-      updatedAt: null,
-      deletedAt: null,
     );
 
     return await dirRepository.saveNewDirection(newDirection);

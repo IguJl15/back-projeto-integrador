@@ -7,6 +7,7 @@ final class Direction extends BaseModel {
 
   List<Term> terms;
 
+  DirectionStatus status;
   String userId;
 
   Direction({
@@ -16,7 +17,44 @@ final class Direction extends BaseModel {
     required this.terms,
     required this.userId,
     required DateTime createdAt,
-    required DateTime? updatedAt,
-    required DateTime? deletedAt,
+    this.status = DirectionStatus.inProgress,
+    DateTime? updatedAt,
+    DateTime? deletedAt,
   }) : super(id, createdAt, updatedAt, deletedAt);
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'redirectEmail': redirectEmail,
+        'terms': terms.map((e) => e.toMap()).toList(),
+        'status': status.toString(),
+        'userId': userId,
+        'createdAt': createdAt.toIso8601String(),
+        'updatedAt': updatedAt?.toIso8601String(),
+      };
+}
+
+enum DirectionStatus {
+  inProgress('in progress'),
+  suspended('suspended'),
+  canceled('canceled');
+
+  const DirectionStatus(this.verbose);
+
+  final String verbose;
+
+  @override
+  String toString() => verbose;
+
+  static DirectionStatus parse(String value) {
+    if (RegExp('in[_ ]?progress', caseSensitive: false).hasMatch(value)) {
+      return DirectionStatus.inProgress;
+    } else {
+      return switch (value) {
+        'suspended' => DirectionStatus.suspended,
+        'canceled' => DirectionStatus.canceled,
+        _ => throw FormatException(),
+      };
+    }
+  }
 }

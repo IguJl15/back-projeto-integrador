@@ -30,10 +30,13 @@ class DatabaseConnection {
     );
 
     postgresConnection!.open().then(
-      (value) {
+      (value) async {
         print("CONECTADO AO BANCO DE DADOS POSTGRES");
       },
-      onError: (error, stackTrace) => print(error),
+      onError: (error, stackTrace) {
+        print(error);
+        throw error;
+      },
     );
   }
 
@@ -45,6 +48,13 @@ class DatabaseConnection {
 
   Future<T> query<T>(QueryParser<T> query) async {
     final rows = await postgresConnection!.mappedResultsQuery(query.queryString, substitutionValues: query.variables);
+
     return query.fromDbRowsMaps(rows);
+  }
+
+  Future<T> executeTransaction<T>(TransactionQueryParser<T> transaction) async {
+    final rows = await postgresConnection!.transaction(transaction.transaction);
+
+    return transaction.fromDbRowsMaps(rows);
   }
 }

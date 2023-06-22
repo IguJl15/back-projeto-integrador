@@ -1,21 +1,31 @@
-import '../../../../core/models/base_model.dart';
-
-final class Term extends BaseModel {
-  String description;
+final class Term {
+  final String id;
+  final String description;
+  final bool isForbidden;
 
   Term(
-    super.id,
+    this.id,
     this.description,
-    super.createdAt,
-    super.updatedAt,
-    super.deletedAt,
+    this.isForbidden,
   );
 
-  factory Term.newfound(String id, String description) => Term(
-        id,
+  factory Term.newfound(String description) => Term(
+        '',
         description,
-        DateTime.now(),
-        null,
-        null,
+        false,
       );
+
+  factory Term.fromClearMap(Map<String, dynamic> map) {
+    return Term(
+      map['id'] ?? '',
+      map['description'] ?? '',
+      bool.tryParse(map['isForbidden'] ?? '') ?? false,
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'description': description,
+        'isForbidden': isForbidden,
+      };
 }

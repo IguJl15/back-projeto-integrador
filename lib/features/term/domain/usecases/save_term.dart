@@ -16,8 +16,9 @@ class SaveTerm {
       return existingTerm;
     }
 
-    final newTerm = Term.newfound(uuAidi.generateV4(), term.description);
+    final newTerm = Term.newfound(term.description);
     await termRepository.saveTerm(newTerm);
+
     return newTerm;
   }
 }
