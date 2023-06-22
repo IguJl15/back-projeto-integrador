@@ -78,8 +78,7 @@ INSERT INTO $_tableName(title, user_id, direction_email, status_id)
 
   @override
   Direction fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {
-    final uniqueRow = dbResult.singleOrNull;
-    if (uniqueRow == null) throw UserNotFound(null);
+    final uniqueRow = dbResult.single;
 
     return Direction(
       id: uniqueRow[_tableName]?['direction_id'],

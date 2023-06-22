@@ -36,7 +36,7 @@ final class User extends BaseModel {
       jwtMap["name"],
       jwtMap["email"],
       jwtMap["phone_number"],
-      jwtMap["created_at"],
+      DateTime.tryParse(jwtMap["created_at"] ?? '') ?? DateTime.now(),
       null,
       null,
       '',

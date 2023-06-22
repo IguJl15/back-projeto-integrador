@@ -27,8 +27,7 @@ INSERT INTO $_tableName (complete_name, email, phone_number, password_hash)
 
   @override
   UserDataModel fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {
-    final uniqueRow = dbResult.singleOrNull;
-    if (uniqueRow == null) throw UserNotFound(null);
+    final uniqueRow = dbResult.single;
 
     return UserDataModel(
       id: uniqueRow[_tableName]?['user_id'],

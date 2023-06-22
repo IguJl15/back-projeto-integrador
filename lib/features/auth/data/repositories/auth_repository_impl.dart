@@ -36,7 +36,7 @@ final class AuthRepositoryImpl implements AuthRepository {
     final query = GetUserByIdQuery(id: id);
     final userDataModel = await dbConnection.query(query);
 
-    return userDataModel.toEntity();
+    return userDataModel?.toEntity();
   }
 
   @override

@@ -1,8 +1,7 @@
 import '../../../../core/database/query_parser.dart';
-import '../../domain/errors/errors.dart';
 import '../data_models/user_data_model.dart';
 
-final class GetUserByIdQuery implements QueryParser<UserDataModel> {
+final class GetUserByIdQuery implements QueryParser<UserDataModel?> {
   static const _tableName = "systemuser";
 
   @override
@@ -17,9 +16,9 @@ final class GetUserByIdQuery implements QueryParser<UserDataModel> {
         };
 
   @override
-  UserDataModel fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {
+  UserDataModel? fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {
     final uniqueRow = dbResult.singleOrNull;
-    if (uniqueRow == null) throw UserNotFound(null);
+    if (uniqueRow == null) return null;
 
     return UserDataModel(
       id: uniqueRow[_tableName]?['user_id'],
