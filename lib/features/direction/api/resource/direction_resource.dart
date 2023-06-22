@@ -10,12 +10,14 @@ import '../../../term/domain/models/term.dart';
 import '../../domain/dtos/create_direction_dto.dart';
 import '../../domain/usecases/create_direction.dart';
 import '../../domain/usecases/get_all_direction.dart';
+import '../../domain/usecases/get_direction.dart';
 
 class DirectionResource extends Resource {
   @override
   List<Route> get routes => [
         Route.get('/', getAll),
         Route.post('/', createDirection),
+        Route.get('/:id', getDirection),
       ];
 
   Future<Response> getAll(Request request, Injector injector, ModularArguments args) async {
@@ -27,6 +29,22 @@ class DirectionResource extends Resource {
       final response = await usecase(GetDirectionsDto(user.id));
 
       return Response(HttpStatus.created, body: jsonEncode({'directions': response.map((e) => e.toMap()).toList()}));
+    } on ApplicationError catch (e) {
+      return Response(e.statusCode, body: jsonEncode({'error': e.toMap()}));
+    }
+  }
+
+  Future<Response> getDirection(Request request, Injector injector, ModularArguments args) async {
+    final extractor = injector<RequestExtractor>();
+    final usecase = injector<GetDirection>();
+
+    try {
+      final id = args.params['id'] ?? '';
+      final user = extractor.getUser(request);
+
+      final response = await usecase(user, id);
+
+      return Response(HttpStatus.created, body: jsonEncode(response.toMap()));
     } on ApplicationError catch (e) {
       return Response(e.statusCode, body: jsonEncode({'error': e.toMap()}));
     }
