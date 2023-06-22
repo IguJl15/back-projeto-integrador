@@ -1,5 +1,6 @@
 import 'package:shelf_modular/shelf_modular.dart';
 
+import '../../features/auth/domain/utils/extractor.dart';
 import '../database/database.dart';
 import '../utils/hasher.dart';
 import '../utils/tolkien.dart';
@@ -12,5 +13,6 @@ class CoreModule extends Module {
         Bind.factory<Hasher>((i) => Hasher(), export: true),
         Bind.factory<UuAidi>((i) => UuAidi(), export: true),
         Bind.factory<Tolkien>((i) => Tolkien(uuAidi: i()), export: true),
+        Bind.factory<RequestExtractor>((i) => RequestExtractor(i()), export: true),
       ];
 }

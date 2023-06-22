@@ -1,6 +1,5 @@
-import 'package:back_projeto_integrador/features/direction/domain/repositories/direction_repository.dart';
-
 import '../models/direction.dart';
+import '../repositories/direction_repository.dart';
 
 class GetAllDirection {
   final DirectionRepository repository;
