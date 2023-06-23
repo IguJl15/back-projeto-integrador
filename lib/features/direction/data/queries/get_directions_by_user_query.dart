@@ -1,8 +1,9 @@
-import '../../../../core/database/query_parser.dart';
-import 'get_all_direction_terms_query.dart';
-import 'package:postgres/src/execution_context.dart';
+import 'package:postgres/postgres.dart';
 
+import '../../../../core/database/query_parser.dart';
 import '../../domain/models/direction.dart';
+import 'get_all_direction_terms_query.dart';
+import 'get_direction_query.dart';
 
 class GetDirectionsByUserQuery implements TransactionQueryParser<List<Direction>> {
   static const tableName = "direction";
@@ -48,17 +49,7 @@ WHERE user_id = @userId
   fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> rows) {
     return rows
         .map(
-          (row) => Direction(
-            id: row[tableName]?['direction_id'],
-            title: row[tableName]?['title'],
-            redirectEmail: row[tableName]?['redirect_email'] ?? '',
-            terms: row[tableName]?['terms'],
-            userId: row[tableName]?['user_id'],
-            status: DirectionStatus.parse(row[tableName]?['status_description']),
-            createdAt: row[tableName]?['created_at'],
-            updatedAt: row[tableName]?['updated_at'],
-            deletedAt: row[tableName]?['deleted_at'],
-          ),
+          (row) => GetDirectionQuery.getDirectionFromDbMap(row),
         )
         .toList();
   }

@@ -53,6 +53,10 @@ WHERE direction_id = @directionId
     final row = rows.singleOrNull;
     if (row == null) return null;
 
+    return getDirectionFromDbMap(row);
+  }
+
+  static Direction getDirectionFromDbMap(Map<String, Map<String, dynamic>> row, [String tableName = tableName]) {
     return Direction(
       id: row[tableName]?['direction_id'],
       title: row[tableName]?['title'],

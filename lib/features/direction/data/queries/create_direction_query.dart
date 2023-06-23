@@ -1,9 +1,9 @@
-import 'get_all_direction_terms_query.dart';
 import 'package:postgres/postgres.dart';
 
 import '../../../../core/database/query_parser.dart';
-import '../../../auth/domain/errors/errors.dart';
 import '../../domain/models/direction.dart';
+import 'get_all_direction_terms_query.dart';
+import 'get_direction_query.dart';
 import 'insert_direction_terms.dart';
 
 final class CreateDirectionQuery implements TransactionQueryParser<Direction> {
@@ -78,18 +78,6 @@ INSERT INTO $_tableName(title, user_id, direction_email, status_id)
 
   @override
   Direction fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {
-    final uniqueRow = dbResult.single;
-
-    return Direction(
-      id: uniqueRow[_tableName]?['direction_id'],
-      title: uniqueRow[_tableName]?['title'],
-      redirectEmail: uniqueRow[_tableName]?['direction_email'],
-      terms: uniqueRow[_tableName]?['terms'],
-      userId: uniqueRow[_tableName]?['user_id'],
-      status: DirectionStatus.parse(uniqueRow[_tableName]?['status_description']),
-      createdAt: uniqueRow[_tableName]?['created_at'],
-      updatedAt: uniqueRow[_tableName]?['updated_at'],
-      deletedAt: uniqueRow[_tableName]?['deleted_at'],
-    );
+    return GetDirectionQuery.getDirectionFromDbMap(dbResult.single);
   }
 }
