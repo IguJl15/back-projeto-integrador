@@ -22,8 +22,11 @@ WHERE direction_id = @directionId
 
   @override
   Future<List<Map<String, Map<String, dynamic>>>> transaction(PostgreSQLExecutionContext connection) async {
-    final directions =
-        await connection.mappedResultsQuery(queryString, substitutionValues: {'directionId': directionId});
+    final directions = await connection.mappedResultsQuery(
+      queryString,
+      substitutionValues: {'directionId': directionId},
+    );
+    if (directions.isEmpty) return directions;
 
     final direction = directions.single;
 
