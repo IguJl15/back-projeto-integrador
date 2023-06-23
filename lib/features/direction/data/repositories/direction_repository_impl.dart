@@ -2,6 +2,7 @@ import '../../../../core/database/database.dart';
 import '../../domain/models/direction.dart';
 import '../../domain/repositories/direction_repository.dart';
 import '../queries/create_direction_query.dart';
+import '../queries/delete_direction_query.dart';
 import '../queries/get_direction_query.dart';
 import '../queries/get_directions_by_user_query.dart';
 
@@ -26,5 +27,10 @@ final class DirectionRepositoryImpl implements DirectionRepository {
   @override
   Future<Direction?> getDirectionOrNull(String directionId) async {
     return await dbConnection.executeTransaction(GetDirectionQuery(directionId));
+  }
+
+  @override
+  Future<void> deleteDirection(String directionId) async {
+    await dbConnection.query(DeleteDirectionQuery(directionId));
   }
 }

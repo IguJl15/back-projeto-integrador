@@ -11,7 +11,7 @@ class GetDirection {
   Future<Direction> call(User user, String directionId) async {
     final direction = await repository.getDirectionOrNull(directionId);
 
-    if (direction == null || direction.userId != user.id) {
+    if (direction == null || direction.isDeleted || direction.userId != user.id) {
       throw NotFoundError("Direcionamento não encontrado");
     }
 
