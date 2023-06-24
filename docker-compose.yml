@@ -11,20 +11,13 @@ services:
       - POSTGRESQL_DATABASE=proj_integrador_dev
     ports:
       - '5432:5432'
-    networks: 
-      - backend
-    
+
   dart-server:
     container_name: 'dart-server'
     build: .
     links:
-      - "postgresql"
+      - postgresql
     depends_on:
       - postgresql
-    networks: 
-      - backend
     ports:
       - "8080:8080"
-
-networks:
-  backend:
