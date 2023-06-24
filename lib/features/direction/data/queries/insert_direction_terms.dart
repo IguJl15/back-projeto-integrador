@@ -1,11 +1,10 @@
 import '../../../../core/database/query_parser.dart';
+import '../../../../core/database/tables.dart';
 
 final class InsertDirectionsTerms implements QueryParser<void> {
-  static const _tableName = "DirectionTerms";
-
   @override
   final String queryString = """
-INSERT INTO $_tableName(term_id, direction_id)
+INSERT INTO $directionTermsTable(term_id, direction_id)
         SELECT
             l.element,
             @directionId

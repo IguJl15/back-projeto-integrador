@@ -1,16 +1,14 @@
 import '../../../../core/database/query_parser.dart';
+import '../../../../core/database/tables.dart';
 
 final class DeleteDirectionQuery implements QueryParser<void> {
-  static const _tableName = "direction";
-  static const dirTermsTable = "DirectionTerms";
-
   @override
   final String queryString = """
 WITH t AS (
-    DELETE FROM $dirTermsTable
+    DELETE FROM $directionTermsTable
     WHERE direction_id = @directionId
 )
-DELETE FROM $_tableName
+DELETE FROM $directionsTable
 WHERE direction_id = @directionId;
 """;
 

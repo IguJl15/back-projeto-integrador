@@ -1,18 +1,17 @@
 import 'package:postgres/postgres.dart';
 
 import '../../../../core/database/query_parser.dart';
+import '../../../../core/database/tables.dart';
 import '../../domain/models/direction.dart';
 import 'get_all_direction_terms_query.dart';
 import 'get_direction_query.dart';
 import 'insert_direction_terms.dart';
 
 final class CreateDirectionQuery implements TransactionQueryParser<Direction> {
-  static const _tableName = "direction";
-
   final String createDirectionQueryString = """
-INSERT INTO $_tableName(title, user_id, direction_email, status_id)
+INSERT INTO $directionsTable(title, user_id, direction_email, status_id)
     VALUES (
-        @title, 
+        @title,
         @userId, 
         @directionEmail, 
         (select status_id from directionstatus where status_description ilike @statusName)
@@ -55,7 +54,7 @@ INSERT INTO $_tableName(title, user_id, direction_email, status_id)
         'directionEmail': directionEmail,
       },
     );
-    final String descriptionId = newDirection.single[_tableName]?['direction_id'];
+    final String descriptionId = newDirection.single[directionsTable]?['direction_id'];
 
     final insertDirectionsTerms = InsertDirectionsTerms(termIds: termsIds, directionId: descriptionId);
     await connection.query(
@@ -65,13 +64,13 @@ INSERT INTO $_tableName(title, user_id, direction_email, status_id)
 
     final termsQuery = GetAllDirectionTermsQuery(descriptionId);
     final terms = await connection.mappedResultsQuery(termsQuery.queryString, substitutionValues: termsQuery.variables);
-    newDirection.single[_tableName]!['terms'] = termsQuery.fromDbRowsMaps(terms);
+    newDirection.single[directionsTable]!['terms'] = termsQuery.fromDbRowsMaps(terms);
 
     final status = await connection.query(
       "select status_description from directionstatus status where status_id = @statusId",
-      substitutionValues: {'statusId': newDirection.single[_tableName]!['status_id']},
+      substitutionValues: {'statusId': newDirection.single[directionsTable]!['status_id']},
     );
-    newDirection.single[_tableName]!['status_description'] = status.single.first as String;
+    newDirection.single[directionsTable]!['status_description'] = status.single.first as String;
 
     return newDirection;
   }

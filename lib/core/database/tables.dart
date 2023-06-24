@@ -1,0 +1,9 @@
+const String directionsTable = 'Direction';
+const String directionStatusTable = 'DirectionStatus';
+const String directionTermsTable = 'DirectionTerms';
+const String termsTable = 'Terms';
+const String newsTable = 'News';
+const String forwardedNewsTable = 'ForwardedNew';
+const String usersTable = 'SystemUser';
+const String rolesTable = 'SystemRole';
+const String jwtTokensTable = 'JwtTokens';

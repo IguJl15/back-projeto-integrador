@@ -1,11 +1,10 @@
 import '../../../../core/database/query_parser.dart';
+import '../../../../core/database/tables.dart';
 import '../data_models/user_data_model.dart';
 
 final class GetUsersByEmailQuery implements QueryParser<List<UserDataModel>> {
-  static const _tableName = "systemuser";
-
   @override
-  final String queryString = "SELECT * FROM $_tableName where $_tableName.email = @email";
+  final String queryString = "SELECT * FROM $usersTable where $usersTable.email = @email";
   @override
   final Map<String, dynamic> variables;
 
@@ -18,14 +17,14 @@ final class GetUsersByEmailQuery implements QueryParser<List<UserDataModel>> {
   List<UserDataModel> fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {
     return dbResult
         .map((row) => UserDataModel(
-              id: row[_tableName]?['user_id'],
-              fullName: row[_tableName]?['complete_name'],
-              email: row[_tableName]?['email'],
-              phone: row[_tableName]?['phone_number'],
-              createdAt: row[_tableName]?['created_at'],
-              updatedAt: row[_tableName]?['updated_at'],
-              deletedAt: row[_tableName]?['deleted_at'],
-              completeHash: row[_tableName]?['password_hash'],
+              id: row[usersTable]?['user_id'],
+              fullName: row[usersTable]?['complete_name'],
+              email: row[usersTable]?['email'],
+              phone: row[usersTable]?['phone_number'],
+              createdAt: row[usersTable]?['created_at'],
+              updatedAt: row[usersTable]?['updated_at'],
+              deletedAt: row[usersTable]?['deleted_at'],
+              completeHash: row[usersTable]?['password_hash'],
             ))
         .toList();
   }

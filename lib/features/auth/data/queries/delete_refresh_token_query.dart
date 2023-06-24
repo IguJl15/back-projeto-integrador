@@ -1,10 +1,9 @@
 import '../../../../core/database/query_parser.dart';
+import '../../../../core/database/tables.dart';
 
 final class DeleteRefreshTokenQuery implements QueryParser<void> {
-  static const _tableName = "jwttokens";
-
   @override
-  final String queryString = "DELETE FROM $_tableName WHERE jwt_id = @jwt_id;";
+  final String queryString = "DELETE FROM $jwtTokensTable WHERE jwt_id = @jwt_id;";
   @override
   final Map<String, dynamic> variables;
 

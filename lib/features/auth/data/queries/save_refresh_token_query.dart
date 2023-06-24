@@ -1,10 +1,9 @@
 import '../../../../core/database/query_parser.dart';
+import '../../../../core/database/tables.dart';
 
 final class SaveRefreshTokenQuery implements QueryParser<void> {
-  static const _tableName = "jwttokens";
-
   @override
-  final String queryString = "INSERT INTO $_tableName (jwt_id, user_id) values (@jwt_id, @user_id);";
+  final String queryString = "INSERT INTO $jwtTokensTable (jwt_id, user_id) values (@jwt_id, @user_id);";
   @override
   final Map<String, dynamic> variables;
 

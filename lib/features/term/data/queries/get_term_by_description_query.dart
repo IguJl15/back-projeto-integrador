@@ -1,13 +1,11 @@
 import '../../../../core/database/query_parser.dart';
-
+import '../../../../core/database/tables.dart';
 import '../../domain/models/term.dart';
 
 class GetTermsByDescriptionQuery implements QueryParser<List<Term>> {
-  static const String _tableName = "terms";
-
   @override
   String get queryString => """
-SELECT * FROM $_tableName t 
+SELECT * FROM $termsTable t 
 WHERE 
   t.term_description ilike @description
   AND (@withForbidden::boolean OR (NOT t.is_forbidden))
@@ -24,9 +22,9 @@ WHERE
     return rows
         .map(
           (row) => Term(
-            row[_tableName]?['term_id'],
-            row[_tableName]?['term_description'],
-            row[_tableName]?['is_forbidden'],
+            row[termsTable]?['term_id'],
+            row[termsTable]?['term_description'],
+            row[termsTable]?['is_forbidden'],
           ),
         )
         .toList();
