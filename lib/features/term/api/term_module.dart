@@ -1,3 +1,4 @@
+import 'package:back_projeto_integrador/features/term/domain/usecases/filter_terms_list.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 
 import '../data/repositories/term_repository_impl.dart';
@@ -11,5 +12,6 @@ class TermModule extends Module {
         Bind.singleton<TermRepository>((i) => TermRepositoryImpl(dbConnection: i()), export: true),
         Bind.factory<SaveTerm>((i) => SaveTerm(i(), i()), export: true),
         Bind.factory<IsTermForbidden>((i) => IsTermForbidden(i()), export: true),
+        Bind.factory<FilterTermsList>((i) => FilterTermsList(i()), export: true),
       ];
 }

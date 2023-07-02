@@ -28,4 +28,14 @@ final class Term {
         'description': description,
         'isForbidden': isForbidden,
       };
+
+  @override
+  bool operator ==(covariant Term other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id && other.description == description && other.isForbidden == isForbidden;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ description.hashCode ^ isForbidden.hashCode;
 }
