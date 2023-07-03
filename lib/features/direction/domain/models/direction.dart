@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../../../../core/models/base_model.dart';
 import '../../../term/domain/models/term.dart';
 
@@ -35,6 +37,30 @@ final class Direction extends BaseModel {
         'createdAt': createdAt.toIso8601String(),
         'updatedAt': updatedAt?.toIso8601String(),
       };
+
+  @override
+  bool operator ==(covariant Direction other) {
+    if (identical(this, other)) return true;
+    final listEquals = const DeepCollectionEquality().equals;
+
+    return other.id == id &&
+        other.title == title &&
+        other.redirectEmail == redirectEmail &&
+        other.status == status &&
+        listEquals(other.inclusionTerms, inclusionTerms) &&
+        listEquals(other.exclusionTerms, exclusionTerms) &&
+        other.userId == userId;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        title.hashCode ^
+        redirectEmail.hashCode ^
+        inclusionTerms.hashCode ^
+        exclusionTerms.hashCode ^
+        userId.hashCode;
+  }
 }
 
 enum DirectionStatus {
@@ -48,6 +74,14 @@ enum DirectionStatus {
 
   @override
   String toString() => verbose;
+
+  static DirectionStatus? tryParse(String value) {
+    try {
+      return DirectionStatus.parse(value);
+    } on FormatException catch (_) {
+      return null;
+    }
+  }
 
   static DirectionStatus parse(String value) {
     if (RegExp('in[_ ]?progress', caseSensitive: false).hasMatch(value)) {

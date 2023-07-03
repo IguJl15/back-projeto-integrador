@@ -8,6 +8,7 @@ import '../domain/usecases/create_direction.dart';
 import '../domain/usecases/delete_direction.dart';
 import '../domain/usecases/get_all_direction.dart';
 import '../domain/usecases/get_direction.dart';
+import '../domain/usecases/update_direction.dart';
 import 'resource/direction_resource.dart';
 
 class DirectionModule extends Module {
@@ -18,6 +19,7 @@ class DirectionModule extends Module {
         Bind.factory<GetAllDirection>((i) => GetAllDirection(i())),
         Bind.factory<GetDirection>((i) => GetDirection(i())),
         Bind.factory<DeleteDirection>((i) => DeleteDirection(i(), i())),
+        Bind.factory<UpdateDirection>((i) => UpdateDirection(i(), i(), i(), i())),
       ];
 
   @override

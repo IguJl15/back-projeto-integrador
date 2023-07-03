@@ -1,9 +1,8 @@
 import 'dart:collection';
 
-import 'package:back_projeto_integrador/features/term/domain/models/term.dart';
-import 'package:back_projeto_integrador/features/term/domain/usecases/is_term_forbidden.dart';
-
 import '../../../direction/domain/errors/direction_errors.dart';
+import '../models/term.dart';
+import 'is_term_forbidden.dart';
 
 /// Returns a new list. Before validating the terms, the terms list will be filtered.
 ///

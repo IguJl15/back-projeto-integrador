@@ -8,10 +8,12 @@ import '../../../../core/errors/application_error.dart';
 import '../../../auth/domain/utils/extractor.dart';
 import '../../../term/domain/models/term.dart';
 import '../../domain/dtos/create_direction_dto.dart';
+import '../../domain/dtos/patch_direction_dto.dart';
 import '../../domain/usecases/create_direction.dart';
 import '../../domain/usecases/delete_direction.dart';
 import '../../domain/usecases/get_all_direction.dart';
 import '../../domain/usecases/get_direction.dart';
+import '../../domain/usecases/update_direction.dart';
 
 class DirectionResource extends Resource {
   @override
@@ -20,6 +22,7 @@ class DirectionResource extends Resource {
         Route.post('/', createDirection),
         Route.get('/:id', getDirection),
         Route.delete('/:id', deleteDirection),
+        Route.path('/:id', updateDirection),
       ];
 
   Future<Response> getAll(Request request, Injector injector, ModularArguments args) async {
@@ -88,6 +91,21 @@ class DirectionResource extends Resource {
       await usecase(user, id);
 
       return Response.ok("Deleted successfully");
+    } on ApplicationError catch (e) {
+      return Response(e.statusCode, body: jsonEncode({'error': e.toMap()}));
+    }
+  }
+
+  Future<Response> updateDirection(Request request, ModularArguments args, Injector injector) async {
+    final extractor = injector<RequestExtractor>();
+    final usecase = injector<UpdateDirection>();
+
+    try {
+      final user = extractor.getUser(request);
+
+      final updatedDirection = await usecase(PatchDirectionDto.fromMap(user, args.params['id'], args.data));
+
+      return Response(HttpStatus.ok, body: jsonEncode(updatedDirection.toMap()));
     } on ApplicationError catch (e) {
       return Response(e.statusCode, body: jsonEncode({'error': e.toMap()}));
     }
