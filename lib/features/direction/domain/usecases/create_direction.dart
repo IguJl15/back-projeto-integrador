@@ -1,11 +1,8 @@
-import 'package:back_projeto_integrador/features/term/domain/usecases/filter_terms_list.dart';
-
 import '../../../../core/utils/uu_aidi.dart';
 import '../../../term/domain/models/term.dart';
-import '../../../term/domain/usecases/is_term_forbidden.dart';
+import '../../../term/domain/usecases/filter_terms_list.dart';
 import '../../../term/domain/usecases/save_term.dart';
 import '../dtos/create_direction_dto.dart';
-import '../errors/direction_errors.dart';
 import '../models/direction.dart';
 import '../repositories/direction_repository.dart';
 
@@ -27,18 +24,24 @@ class CreateDirection {
   );
 
   Future<Direction> call(CreateDirectionDto params) async {
-    final terms = await filterTermsList(params.terms);
+    final incTerms = await filterTermsList(params.inclusionTerms);
+    final excTerms = await filterTermsList(params.exclusionTerms);
 
-    final savedTerms = <Term>[];
-    for (final term in terms) {
-      savedTerms.add(await saveTerm(term));
+    final savedIncTerms = <Term>[];
+    final savedExcTerms = <Term>[];
+    for (final term in incTerms) {
+      savedIncTerms.add(await saveTerm(term));
+    }
+    for (final term in excTerms) {
+      savedExcTerms.add(await saveTerm(term));
     }
 
     final newDirection = Direction(
       id: uuAidi.generateV4(),
       title: params.title,
       redirectEmail: params.redirectEmail,
-      terms: savedTerms,
+      inclusionTerms: savedIncTerms,
+      exclusionTerms: savedExcTerms,
       userId: params.userId,
       createdAt: DateTime.now(),
     );

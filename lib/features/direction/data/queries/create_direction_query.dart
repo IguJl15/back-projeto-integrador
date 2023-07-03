@@ -23,14 +23,16 @@ INSERT INTO $directionsTable(title, user_id, direction_email, status_id)
   final String statusName;
   final String userId;
   final String? directionEmail;
-  final List<String> termsIds;
+  final List<String> inclusionTermsIds;
+  final List<String> exclusionTermsIds;
 
   CreateDirectionQuery({
     required this.title,
     required this.statusName,
     required this.userId,
     required this.directionEmail,
-    required this.termsIds,
+    required this.inclusionTermsIds,
+    required this.exclusionTermsIds,
   });
 
   factory CreateDirectionQuery.fromDirection(Direction direction) => CreateDirectionQuery(
@@ -38,7 +40,8 @@ INSERT INTO $directionsTable(title, user_id, direction_email, status_id)
         userId: direction.userId,
         directionEmail: direction.redirectEmail,
         statusName: direction.status.verbose,
-        termsIds: direction.terms.map((e) => e.id).toList(),
+        inclusionTermsIds: direction.inclusionTerms.map((e) => e.id).toList(),
+        exclusionTermsIds: direction.exclusionTerms.map((e) => e.id).toList(),
       );
 
   @override
@@ -56,15 +59,40 @@ INSERT INTO $directionsTable(title, user_id, direction_email, status_id)
     );
     final String descriptionId = newDirection.single[directionsTable]?['direction_id'];
 
-    final insertDirectionsTerms = InsertDirectionsTerms(termIds: termsIds, directionId: descriptionId);
+    final insertDirectionsTerms = InsertDirectionsTerms(termIds: inclusionTermsIds, directionId: descriptionId);
     await connection.query(
       insertDirectionsTerms.queryString,
       substitutionValues: insertDirectionsTerms.variables,
     );
 
+    if (exclusionTermsIds.isNotEmpty) {
+      final insertExcDirectionsTerms = InsertDirectionsTerms(
+        termIds: exclusionTermsIds,
+        directionId: descriptionId,
+        exclusionTerm: true,
+      );
+      await connection.query(
+        insertExcDirectionsTerms.queryString,
+        substitutionValues: insertExcDirectionsTerms.variables,
+      );
+    }
+
     final termsQuery = GetAllDirectionTermsQuery(descriptionId);
     final terms = await connection.mappedResultsQuery(termsQuery.queryString, substitutionValues: termsQuery.variables);
-    newDirection.single[directionsTable]!['terms'] = termsQuery.fromDbRowsMaps(terms);
+    newDirection.single[directionsTable]!['inclusionTerms'] = termsQuery.fromDbRowsMaps(
+      terms
+          .where(
+            (termRow) => termRow[directionTermsTable]!['is_exclusion_term'] == false,
+          )
+          .toList(),
+    );
+    newDirection.single[directionsTable]!['exclusionTerms'] = termsQuery.fromDbRowsMaps(
+      terms
+          .where(
+            (termRow) => termRow[directionTermsTable]!['is_exclusion_term'],
+          )
+          .toList(),
+    );
 
     final status = await connection.query(
       "select status_description from directionstatus status where status_id = @statusId",

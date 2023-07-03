@@ -30,7 +30,20 @@ WHERE user_id = @userId
         getTermsQueries.queryString,
         substitutionValues: getTermsQueries.variables,
       );
-      direction[directionsTable]!['terms'] = getTermsQueries.fromDbRowsMaps(terms);
+      direction[directionsTable]!['inclusionTerms'] = getTermsQueries.fromDbRowsMaps(
+        terms
+            .where(
+              (termRow) => termRow[directionTermsTable]!['is_exclusion_term'] == false,
+            )
+            .toList(),
+      );
+      direction[directionsTable]!['exclusionTerms'] = getTermsQueries.fromDbRowsMaps(
+        terms
+            .where(
+              (termRow) => termRow[directionTermsTable]!['is_exclusion_term'],
+            )
+            .toList(),
+      );
 
       final status = await connection.query(
         "select status_description from directionstatus status where status_id = @statusId",

@@ -58,7 +58,8 @@ class DirectionResource extends Resource {
 
     try {
       final user = extractor.getUser(request);
-      final terms = (args.data['terms'] as List).map((e) => Term.fromClearMap(e)).toList();
+      final inclusionTerms = (args.data['inclusionTerms'] as List).map((e) => Term.fromClearMap(e)).toList();
+      final exclusionTerms = (args.data['exclusionTerms'] as List).map((e) => Term.fromClearMap(e)).toList();
       String? email = args.data['redirectEmail'];
       if (email == null || email.isEmpty) email = user.email;
 
@@ -66,7 +67,8 @@ class DirectionResource extends Resource {
         user.id,
         args.data['title'] ?? '',
         email,
-        terms,
+        inclusionTerms,
+        exclusionTerms,
       ));
 
       return Response(HttpStatus.created, body: jsonEncode(response.toMap()));

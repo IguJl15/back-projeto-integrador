@@ -34,8 +34,20 @@ WHERE direction_id = @directionId
       getTermsQueries.queryString,
       substitutionValues: getTermsQueries.variables,
     );
-    direction[directionsTable]!['terms'] = getTermsQueries.fromDbRowsMaps(terms);
-
+    direction[directionsTable]!['inclusionTerms'] = getTermsQueries.fromDbRowsMaps(
+      terms
+          .where(
+            (termRow) => termRow[directionTermsTable]!['is_exclusion_term'] == false,
+          )
+          .toList(),
+    );
+    direction[directionsTable]!['exclusionTerms'] = getTermsQueries.fromDbRowsMaps(
+      terms
+          .where(
+            (termRow) => termRow[directionTermsTable]!['is_exclusion_term'],
+          )
+          .toList(),
+    );
     final status = await connection.query(
       "select status_description from directionstatus status where status_id = @statusId",
       substitutionValues: {'statusId': direction[directionsTable]!['status_id']},
@@ -58,7 +70,8 @@ WHERE direction_id = @directionId
       id: row[tableName]?['direction_id'],
       title: row[tableName]?['title'],
       redirectEmail: row[tableName]?['redirect_email'] ?? '',
-      terms: row[tableName]?['terms'],
+      inclusionTerms: row[tableName]?['inclusionTerms'],
+      exclusionTerms: row[tableName]?['exclusionTerms'],
       userId: row[tableName]?['user_id'],
       status: DirectionStatus.parse(row[tableName]?['status_description']),
       createdAt: row[tableName]?['created_at'],

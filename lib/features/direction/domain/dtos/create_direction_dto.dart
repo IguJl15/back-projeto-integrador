@@ -6,13 +6,15 @@ final class CreateDirectionDto {
   final String userId;
   final String title;
   final String redirectEmail;
-  final List<Term> terms;
+  final List<Term> inclusionTerms;
+  final List<Term> exclusionTerms;
 
   CreateDirectionDto(
     this.userId,
     this.title,
     this.redirectEmail,
-    this.terms,
+    this.inclusionTerms,
+    this.exclusionTerms,
   );
 
   static final uuidREgex = RegExp(r'/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i');
@@ -27,6 +29,12 @@ final class CreateDirectionDto {
       throw DirectionValidationError("Email para redirecionamento", "Email inválido");
     }
 
-    if (terms.isEmpty) throw DirectionValidationError('Termos', 'A lista de termos não pode estar vazia');
+    if (inclusionTerms.isEmpty) throw DirectionValidationError('Termos', 'A lista de termos não pode estar vazia');
+    if (inclusionTerms.length > 70 || exclusionTerms.length > 70) {
+      throw DirectionValidationError(
+        'Termos',
+        'A lista de termos não conter no máximo 70 termos',
+      );
+    }
   }
 }

@@ -1,8 +1,8 @@
-import 'package:back_projeto_integrador/features/term/domain/usecases/filter_terms_list.dart';
 import 'package:shelf_modular/shelf_modular.dart';
 
 import '../data/repositories/term_repository_impl.dart';
 import '../domain/repositories/term_repository.dart';
+import '../domain/usecases/filter_terms_list.dart';
 import '../domain/usecases/is_term_forbidden.dart';
 import '../domain/usecases/save_term.dart';
 

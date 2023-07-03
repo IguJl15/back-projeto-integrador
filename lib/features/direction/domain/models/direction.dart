@@ -5,7 +5,8 @@ final class Direction extends BaseModel {
   String title;
   String redirectEmail;
 
-  List<Term> terms;
+  List<Term> inclusionTerms;
+  List<Term> exclusionTerms;
 
   DirectionStatus status;
   String userId;
@@ -14,7 +15,8 @@ final class Direction extends BaseModel {
     required String id,
     required this.title,
     required this.redirectEmail,
-    required this.terms,
+    required this.inclusionTerms,
+    required this.exclusionTerms,
     required this.userId,
     required DateTime createdAt,
     this.status = DirectionStatus.inProgress,
@@ -26,7 +28,8 @@ final class Direction extends BaseModel {
         'id': id,
         'title': title,
         'redirectEmail': redirectEmail,
-        'terms': terms.map((e) => e.toMap()).toList(),
+        'inclusionTerms': inclusionTerms.map((e) => e.toMap()).toList(),
+        'exclusionTerms': exclusionTerms.map((e) => e.toMap()).toList(),
         'status': status.toString(),
         'userId': userId,
         'createdAt': createdAt.toIso8601String(),
