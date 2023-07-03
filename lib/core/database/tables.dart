@@ -1,6 +1,6 @@
 const String directionsTable = 'direction';
 const String directionStatusTable = 'directionstatus';
-const String directionTermsTable = 'Directionterms';
+const String directionTermsTable = 'directionterms';
 const String termsTable = 'terms';
 const String newsTable = 'news';
 const String forwardedNewsTable = 'forwardednew';

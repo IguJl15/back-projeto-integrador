@@ -4,9 +4,9 @@ import '../../../../core/database/tables.dart';
 final class DeleteDirectionsTermsQuery implements QueryParser<void> {
   @override
   final String queryString = """
-DELETE FROM $directionsTable
+DELETE FROM $directionTermsTable
 WHERE direction_id = @directionId
-    AND term_id IN unnest(@terms::uuid[]);
+    AND term_id IN (select unnest('@terms'::uuid[]));
 """;
 
   @override

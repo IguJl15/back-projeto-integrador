@@ -19,7 +19,7 @@ final class Term {
     return Term(
       map['id'] ?? '',
       map['description'] ?? '',
-      bool.tryParse(map['isForbidden'] ?? '') ?? false,
+      bool.tryParse((map['isForbidden'] ?? '').toString()) ?? false,
     );
   }
 
