@@ -1,10 +1,12 @@
 import '../../../../core/database/database.dart';
+import '../../domain/dtos/update_direction_dto.dart';
 import '../../domain/models/direction.dart';
 import '../../domain/repositories/direction_repository.dart';
 import '../queries/create_direction_query.dart';
 import '../queries/delete_direction_query.dart';
 import '../queries/get_direction_query.dart';
 import '../queries/get_directions_by_user_query.dart';
+import '../queries/update_direction_query.dart';
 
 final class DirectionRepositoryImpl implements DirectionRepository {
   DatabaseConnection dbConnection;
@@ -32,5 +34,21 @@ final class DirectionRepositoryImpl implements DirectionRepository {
   @override
   Future<void> deleteDirection(String directionId) async {
     await dbConnection.query(DeleteDirectionQuery(directionId));
+  }
+
+  @override
+  Future<Direction> updateDirection(UpdateDirectionDto updateDto) async {
+    final transaction = UpdateDirectionQuery(
+      directionId: updateDto.originalDirectionId,
+      newTitle: updateDto.newTitle,
+      newRedirectEmail: updateDto.newRedirectEmail,
+      newStatus: updateDto.newStatus,
+      addedInclusionTerms: updateDto.addedIncTerms,
+      removedInclusionTerms: updateDto.removedIncTerms,
+      addedExclusionTerms: updateDto.addedExcTerms,
+      removedExclusionTerms: updateDto.removedExcTerms,
+    );
+
+    return await dbConnection.executeTransaction<Direction>(transaction);
   }
 }
