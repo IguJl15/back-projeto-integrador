@@ -1,28 +1,39 @@
 import 'dart:io';
 
-import 'package:dotenv_gen/dotenv_gen.dart';
+import 'package:envied/envied.dart';
 
 part 'env.g.dart';
 
-@DotEnvGen()
+@Envied(path: '.env')
 abstract class Env {
-  const factory Env() = _$Env;
-  const Env._();
-
   // Database
-  String get databaseName;
-  String get databaseHost;
-  int get databasePort;
-  String get databaseUser;
-  String get databasePassword;
+  @EnviedField()
+  static String databaseName = _Env.databaseName;
+  @EnviedField()
+  static String databaseHost = _Env.databaseHost;
+  @EnviedField()
+  static int databasePort = _Env.databasePort;
+  @EnviedField()
+  static String databaseUser = _Env.databaseUser;
+  @EnviedField()
+  static String databasePassword = _Env.databasePassword;
 
-  // Tolkens signature;
-  String get apiSecret;
+  // Tolkens
+  @EnviedField()
+  static String apiSecret = _Env.apiSecret;
+  @EnviedField()
+  static int accessTokenExpiration = _Env.accessTokenExpiration;
+  @EnviedField()
+  static int refreshTokenExpiration = _Env.refreshTokenExpiration;
 
 // Password hash generation;
-  int get passwordSaltLength;
-  int get passwordHashLength;
-  int get passwordHashRounds;
+  @EnviedField()
+  static int passwordSaltLength = _Env.passwordSaltLength;
+  @EnviedField()
+  static int passwordHashLength = _Env.passwordHashLength;
+  @EnviedField()
+  static int passwordHashRounds = _Env.passwordHashRounds;
 
-  int? get port => int.tryParse(Platform.environment['PORT'] ?? "");
+  @EnviedField(defaultValue: 8080)
+  static int port = _Env.port;
 }

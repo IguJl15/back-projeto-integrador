@@ -3,9 +3,9 @@ import 'package:password_hash/password_hash.dart';
 import '../env/env.dart';
 
 class Hasher {
-  final saltLength = Env().passwordSaltLength;
-  final passwordHashLength = Env().passwordHashLength;
-  final rounds = Env().passwordHashRounds;
+  final saltLength = Env.passwordSaltLength;
+  final passwordHashLength = Env.passwordHashLength;
+  final rounds = Env.passwordHashRounds;
 
   String generateSalt() {
     return Salt.generateAsBase64String(saltLength);

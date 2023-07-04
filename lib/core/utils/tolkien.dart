@@ -6,7 +6,7 @@ import 'uu_aidi.dart';
 
 class Tolkien {
   final UuAidi uuAidi;
-  final secret = Env().apiSecret;
+  final secret = Env.apiSecret;
 
   Tolkien({required this.uuAidi});
 

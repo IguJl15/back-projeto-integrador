@@ -34,9 +34,9 @@ class UpdateDirection {
     if (dto.newInclusionTermsList != null) {
       dto.newInclusionTermsList = await filterTermsList(dto.newInclusionTermsList!);
 
-      removedInclusionTerms.addAll(original.inclusionTerms.where((t) => !dto.newInclusionTermsList!.contains(t)));
+      removedInclusionTerms.addAll(original.inclusionTerms.notIncludedIn(dto.newInclusionTermsList!));
 
-      final newTerms = dto.newInclusionTermsList!.where((t) => !original.inclusionTerms.contains(t));
+      final newTerms = dto.newInclusionTermsList!.notIncludedIn(original.inclusionTerms);
       newInclusionTerms.addAll(await saveTerm.saveAll(newTerms.toList()));
     }
 
@@ -44,9 +44,9 @@ class UpdateDirection {
     final removedExclusionTerms = <Term>[];
     if (dto.newExclusionTermsList != null) {
       dto.newExclusionTermsList = await filterTermsList(dto.newExclusionTermsList!);
-      removedExclusionTerms.addAll(original.exclusionTerms.where((t) => !dto.newExclusionTermsList!.contains(t)));
+      removedExclusionTerms.addAll(original.exclusionTerms.notIncludedIn(dto.newExclusionTermsList!));
 
-      final newTerms = dto.newExclusionTermsList!.where((t) => !original.exclusionTerms.contains(t));
+      final newTerms = dto.newExclusionTermsList!.notIncludedIn(original.exclusionTerms);
       newExclusionTerms.addAll(await saveTerm.saveAll(newTerms.toList()));
     }
 
@@ -62,5 +62,11 @@ class UpdateDirection {
         removedExcTerms: removedExclusionTerms,
       ),
     );
+  }
+}
+
+extension Included on List<Term> {
+  notIncludedIn(List<Term> other) {
+    return where((element) => !other.contains(element));
   }
 }
