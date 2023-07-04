@@ -27,8 +27,8 @@ class RegisterUserDto {
       throw AuthValidationError('phone', 'The phone is invalid');
     } else if (password != confirmedPassword) {
       throw AuthValidationError('passwordConfirmation', "The password and confirmed password don't match");
-    } else if (!passwordRegex.hasMatch(password)) {
-      throw AuthValidationError('password', 'The password is weak like you');
+      // } else if (!passwordRegex.hasMatch(password)) {
+      //   throw AuthValidationError('password', 'The password is weak like you');
     }
   }
 
