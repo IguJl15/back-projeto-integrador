@@ -6,7 +6,7 @@ final class DeleteDirectionsTermsQuery implements QueryParser<void> {
   final String queryString = """
 DELETE FROM $directionTermsTable
 WHERE direction_id = @directionId
-    AND term_id IN (select unnest('@terms'::uuid[]));
+    AND term_id IN (select unnest(@terms::uuid[]));
 """;
 
   @override

@@ -10,7 +10,7 @@ INSERT INTO $directionTermsTable(term_id, direction_id, is_exclusion_term)
             @directionId,
             @exclusionTerm
         FROM
-            (select unnest('@terms'::uuid[])) as l(element)
+            (select unnest(@terms::uuid[])) as l(element)
         ON CONFLICT DO NOTHING;
 """;
   @override
