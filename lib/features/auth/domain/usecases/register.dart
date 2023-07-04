@@ -22,7 +22,7 @@ class RegisterUseCase {
   Future<AuthTokens> call(RegisterUserDto registerUserDto) async {
     registerUserDto.validate();
 
-    final existingUser = await authRepository.getUserByEmail(registerUserDto.email);
+    final existingUser = await authRepository.getUserByEmailOrNull(registerUserDto.email);
     if (existingUser != null) throw EmailAlreadyInUse();
 
     final salt = hasher.generateSalt();

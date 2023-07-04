@@ -34,7 +34,7 @@ class RefreshTokenUseCase {
       throw JwtError("invalid sub");
     }
 
-    final user = await authRepository.getUser(payload["sub"]);
+    final user = await authRepository.getUserOrNull(payload["sub"]);
 
     if (user == null) {
       throw UserNotFound(null);

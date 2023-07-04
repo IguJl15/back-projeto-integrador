@@ -32,15 +32,15 @@ final class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<User?> getUser(String id) async {
+  Future<User?> getUserOrNull(String id) async {
     final query = GetUserByIdQuery(id: id);
     final userDataModel = await dbConnection.query(query);
 
-    return userDataModel.toEntity();
+    return userDataModel?.toEntity();
   }
 
   @override
-  FutureOr<User?> getUserByEmail(String email) async {
+  FutureOr<User?> getUserByEmailOrNull(String email) async {
     final query = GetUsersByEmailQuery(email: email);
     final dbResult = await dbConnection.query(query);
 

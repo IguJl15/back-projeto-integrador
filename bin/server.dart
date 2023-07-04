@@ -20,8 +20,7 @@ void main(List<String> args) async {
 
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
-
-  final port = Env().port ?? 8080;
+  final port = Env.port;
   final server = await serve(modularHandler, ip, port);
   print('Server listening on $ip with port ${server.port}');
 }

@@ -18,7 +18,7 @@ class Login {
   });
 
   Future<AuthTokens> call(String email, String password) async {
-    User? user = await authRepository.getUserByEmail(email);
+    User? user = await authRepository.getUserByEmailOrNull(email);
 
     if (user == null) {
       throw UserNotFound('User not found');

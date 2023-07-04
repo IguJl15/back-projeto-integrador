@@ -1,3 +1,4 @@
+import '../../../../core/env/env.dart';
 import '../../../../core/utils/tolkien.dart';
 import '../models/auth_tokens.dart';
 import '../models/user.dart';
@@ -14,8 +15,8 @@ class CreateAndSaveTokens {
   });
 
   Future<AuthTokens> call(User user) async {
-    final accessToken = tolkien.sign(user.toJwtMap(), Duration(minutes: 30));
-    final refreshToken = tolkien.sign({"sub": user.id}, Duration(days: 15));
+    final accessToken = tolkien.sign(user.toJwtMap(), Duration(seconds: Env.accessTokenExpiration));
+    final refreshToken = tolkien.sign({"sub": user.id}, Duration(seconds: Env.refreshTokenExpiration));
 
     await authRepository.saveRefreshToken(refreshToken.jti, user.id);
 

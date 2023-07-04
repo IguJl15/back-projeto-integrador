@@ -4,11 +4,11 @@ import '../env/env.dart';
 import 'query_parser.dart';
 
 class DatabaseConnection {
-  final String database = Env().databaseName;
-  final String host = Env().databaseHost;
-  final int port = Env().databasePort;
-  final String user = Env().databaseUser;
-  final String password = Env().databasePassword;
+  final String database = Env.databaseName;
+  final String host = Env.databaseHost;
+  final int port = Env.databasePort;
+  final String user = Env.databaseUser;
+  final String password = Env.databasePassword;
 
   PostgreSQLConnection? postgresConnection;
 
@@ -30,10 +30,13 @@ class DatabaseConnection {
     );
 
     postgresConnection!.open().then(
-      (value) {
+      (value) async {
         print("CONECTADO AO BANCO DE DADOS POSTGRES");
       },
-      onError: (error, stackTrace) => print(error),
+      onError: (error, stackTrace) {
+        print(error);
+        throw error;
+      },
     );
   }
 
@@ -45,6 +48,13 @@ class DatabaseConnection {
 
   Future<T> query<T>(QueryParser<T> query) async {
     final rows = await postgresConnection!.mappedResultsQuery(query.queryString, substitutionValues: query.variables);
+
     return query.fromDbRowsMaps(rows);
+  }
+
+  Future<T> executeTransaction<T>(TransactionQueryParser<T> transaction) async {
+    final rows = await postgresConnection!.transaction(transaction.transaction);
+
+    return transaction.fromDbRowsMaps(rows);
   }
 }

@@ -1,4 +1,4 @@
-abstract class BaseModel {
+base class BaseModel {
   final String id;
   final DateTime createdAt;
   DateTime? updatedAt;

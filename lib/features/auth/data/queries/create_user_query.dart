@@ -1,13 +1,11 @@
 import '../../../../core/database/query_parser.dart';
-import '../../domain/errors/errors.dart';
+import '../../../../core/database/tables.dart';
 import '../data_models/user_data_model.dart';
 
 final class CreateUserQuery implements QueryParser<UserDataModel> {
-  static const _tableName = "systemuser";
-
   @override
   final String queryString = """
-INSERT INTO $_tableName (complete_name, email, phone_number, password_hash)
+INSERT INTO $usersTable (complete_name, email, phone_number, password_hash)
     values (@fullName, @email, @phone, @passwordHash) returning *;
 """;
   @override
@@ -27,18 +25,17 @@ INSERT INTO $_tableName (complete_name, email, phone_number, password_hash)
 
   @override
   UserDataModel fromDbRowsMaps(List<Map<String, Map<String, dynamic>>> dbResult) {
-    final uniqueRow = dbResult.singleOrNull;
-    if (uniqueRow == null) throw UserNotFound(null);
+    final uniqueRow = dbResult.single;
 
     return UserDataModel(
-      id: uniqueRow[_tableName]?['user_id'],
-      fullName: uniqueRow[_tableName]?['complete_name'],
-      email: uniqueRow[_tableName]?['email'],
-      phone: uniqueRow[_tableName]?['phone_number'],
-      createdAt: uniqueRow[_tableName]?['created_at'],
-      updatedAt: uniqueRow[_tableName]?['updated_at'],
-      deletedAt: uniqueRow[_tableName]?['deleted_at'],
-      completeHash: uniqueRow[_tableName]?['password_hash'],
+      id: uniqueRow[usersTable]?['user_id'],
+      fullName: uniqueRow[usersTable]?['complete_name'],
+      email: uniqueRow[usersTable]?['email'],
+      phone: uniqueRow[usersTable]?['phone_number'],
+      createdAt: uniqueRow[usersTable]?['created_at'],
+      updatedAt: uniqueRow[usersTable]?['updated_at'],
+      deletedAt: uniqueRow[usersTable]?['deleted_at'],
+      completeHash: uniqueRow[usersTable]?['password_hash'],
     );
   }
 }
