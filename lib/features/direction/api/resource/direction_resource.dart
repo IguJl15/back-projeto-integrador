@@ -25,7 +25,8 @@ class DirectionResource extends Resource {
         Route.path('/:id', updateDirection),
       ];
 
-  Future<Response> getAll(Request request, Injector injector, ModularArguments args) async {
+  Future<Response> getAll(
+      Request request, Injector injector, ModularArguments args) async {
     final extractor = injector<RequestExtractor>();
     final usecase = injector<GetAllDirection>();
 
@@ -33,13 +34,16 @@ class DirectionResource extends Resource {
       final user = extractor.getUser(request);
       final response = await usecase(GetDirectionsDto(user.id));
 
-      return Response(HttpStatus.created, body: jsonEncode({'directions': response.map((e) => e.toMap()).toList()}));
+      return Response(HttpStatus.ok,
+          body: jsonEncode(
+              {'directions': response.map((e) => e.toMap()).toList()}));
     } on ApplicationError catch (e) {
       return Response(e.statusCode, body: jsonEncode({'error': e.toMap()}));
     }
   }
 
-  Future<Response> getDirection(Request request, Injector injector, ModularArguments args) async {
+  Future<Response> getDirection(
+      Request request, Injector injector, ModularArguments args) async {
     final extractor = injector<RequestExtractor>();
     final usecase = injector<GetDirection>();
 
@@ -49,20 +53,25 @@ class DirectionResource extends Resource {
 
       final response = await usecase(user, id);
 
-      return Response(HttpStatus.created, body: jsonEncode(response.toMap()));
+      return Response(HttpStatus.ok, body: jsonEncode(response.toMap()));
     } on ApplicationError catch (e) {
       return Response(e.statusCode, body: jsonEncode({'error': e.toMap()}));
     }
   }
 
-  Future<Response> createDirection(Request request, ModularArguments args, Injector injector) async {
+  Future<Response> createDirection(
+      Request request, ModularArguments args, Injector injector) async {
     final extractor = injector<RequestExtractor>();
     final usecase = injector<CreateDirection>();
 
     try {
       final user = extractor.getUser(request);
-      final inclusionTerms = (args.data['inclusionTerms'] as List).map((e) => Term.fromClearMap(e)).toList();
-      final exclusionTerms = (args.data['exclusionTerms'] as List).map((e) => Term.fromClearMap(e)).toList();
+      final inclusionTerms = (args.data['inclusionTerms'] as List)
+          .map((e) => Term.fromClearMap(e))
+          .toList();
+      final exclusionTerms = (args.data['exclusionTerms'] as List)
+          .map((e) => Term.fromClearMap(e))
+          .toList();
       String? email = args.data['redirectEmail'];
       if (email == null || email.isEmpty) email = user.email;
 
@@ -80,7 +89,8 @@ class DirectionResource extends Resource {
     }
   }
 
-  Future<Response> deleteDirection(Request request, ModularArguments args, Injector injector) async {
+  Future<Response> deleteDirection(
+      Request request, ModularArguments args, Injector injector) async {
     final extractor = injector<RequestExtractor>();
     final usecase = injector<DeleteDirection>();
 
@@ -96,16 +106,19 @@ class DirectionResource extends Resource {
     }
   }
 
-  Future<Response> updateDirection(Request request, ModularArguments args, Injector injector) async {
+  Future<Response> updateDirection(
+      Request request, ModularArguments args, Injector injector) async {
     final extractor = injector<RequestExtractor>();
     final usecase = injector<UpdateDirection>();
 
     try {
       final user = extractor.getUser(request);
 
-      final updatedDirection = await usecase(PatchDirectionDto.fromMap(user, args.params['id'], args.data));
+      final updatedDirection = await usecase(
+          PatchDirectionDto.fromMap(user, args.params['id'], args.data));
 
-      return Response(HttpStatus.ok, body: jsonEncode(updatedDirection.toMap()));
+      return Response(HttpStatus.ok,
+          body: jsonEncode(updatedDirection.toMap()));
     } on ApplicationError catch (e) {
       return Response(e.statusCode, body: jsonEncode({'error': e.toMap()}));
     }
