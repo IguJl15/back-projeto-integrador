@@ -4,34 +4,62 @@ import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart';
 
-class IfpiScrapAlgorithm implements ScrapAlgorithm<List<News>> {
-  final Uri initPage = Uri.parse("");
+class IfpiScrapAlgorithm implements ScrapAlgorithm {
+  final Uri initPage = Uri.parse("https://www.ifpi.edu.br/ultimas-noticias");
 
   @override
   Future<List<News>> scrap() async {
-    final html = http.get(initPage);
+    final response = await http.get(initPage);
 
-    Document document = parser.parse(html);
+    Document document = parser.parse(response.body);
 
     List<Element> noticias = document.querySelectorAll('div.tileItem');
-    for (Element noticia in noticias) {
-      String titulo = noticia.querySelector('h2.tileHeadline')!.text.trim();
 
-      Element? dataPublicacaoElement = noticia.querySelector('span.summary-view-icon');
-      String dataPublicacao =
-          dataPublicacaoElement != null ? dataPublicacaoElement.text.trim() : 'Data de publicação não encontrada';
+    final news = await Future.wait<News>(noticias.map((e) => _getNewFromElement(e)));
 
-      Element? horaPublicacaoElement = noticia.querySelector('span.summary-view-icon');
-      String horaPublicacao =
-          horaPublicacaoElement != null ? horaPublicacaoElement.text.trim() : 'Hora de publicação não encontrada';
+    return news;
+  }
 
-      Element? imgElement = noticia.querySelector('img.tileImage');
-      String urlImagem = imgElement != null ? imgElement.attributes['src']! : 'URL da imagem não encontrada';
+  Future<News> _getNewFromElement(Element noticia) async {
+    String title = noticia.querySelector('h2.tileHeadline')!.text.trim();
+    String url = noticia.querySelector('a')!.attributes['href']!;
 
-      print('Título: $titulo');
-      print('Data de Publicação: $dataPublicacao');
-      print('Hora de Publicação: $horaPublicacao');
-      print('URL da Imagem: $urlImagem');
-    }
+    String dateTimeInformationDiv = noticia.querySelector('.documentByLine')!.text.trim();
+    //                      Groups  (  2  ) (  3  ) (  4  )       (  6  ) (  7  )
+    final dateTimeRegex = RegExp(r"((\d{2})/(\d{2})/(\d{4}))[\W]*((\d{2})h(\d{2}))?");
+
+    final [day, month, year, hour, minute] = dateTimeRegex
+        .firstMatch(dateTimeInformationDiv)!
+        .groups([2, 3, 4, 6, 7])
+        .map<int?>((e) => int.tryParse(e ?? ''))
+        .toList();
+
+    final publishedDateTime = DateTime(year!, month!, day!, hour ?? 0, minute ?? 0);
+
+    Element imgElement = noticia.querySelector('img.tileImage')!;
+    String imageUrl = imgElement.attributes['src']!;
+
+    final content = await _getNewContent(url);
+
+    return News(
+      id: '',
+      title: title,
+      url: url,
+      imageUrl: imageUrl,
+      content: content,
+      publishedAt: publishedDateTime,
+    );
+  }
+
+  Future<String?> _getNewContent(String newUrl) async {
+    final newPage = await http.get(Uri.parse(newUrl));
+
+    final content = parser
+        .parse(newPage.body)
+        .querySelector('#content > article')
+        ?.children
+        .firstWhere((element) => element.attributes['property'] == 'rnews:articleBody');
+
+    return (content?.text.length ?? 0) >= 300 ? content!.text.substring(0, 300) : content?.text ?? '';
   }
 }

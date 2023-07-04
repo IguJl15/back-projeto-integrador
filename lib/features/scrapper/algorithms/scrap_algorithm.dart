@@ -1,3 +1,5 @@
-abstract interface class ScrapAlgorithm<T> {
-  Future<T> scrap();
+import '../models/news.dart';
+
+abstract interface class ScrapAlgorithm {
+  Future<List<News>> scrap();
 }
