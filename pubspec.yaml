@@ -21,6 +21,8 @@ dependencies:
       url: https://github.com/Jay-Tezsure/dart-password-hash.git
       ref: null-safety
   dart_jsonwebtoken: ^2.8.1
+  http: ^1.1.0
+  html: ^0.15.4
 
 dev_dependencies:
   lints: ^2.1.1
