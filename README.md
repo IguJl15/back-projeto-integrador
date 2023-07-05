@@ -1,6 +1,13 @@
 # Back End Bot News
 
-#### Front end: [https://github.com/IguJl15/front-projeto-integrador](https://github.com/IguJl15/front-projeto-integrador)
+## Docs
+
+- [Documento de visão](https://docs.google.com/document/d/1JYcQcsy9NyTRQkKVVJcuyaLhYHUe-mebWZUSBrrwVzs/edit?usp=sharing)
+- [Manual do usuário](https://docs.google.com/document/d/1123RUeJ9JtBN-I8s6DNRF9VQUt4moQxaPo8EUzVch0s/edit?usp=sharing)
+
+### Front end: [https://github.com/IguJl15/front-projeto-integrador](https://github.com/IguJl15/front-projeto-integrador)
+
+---
 
 A server app built using [Shelf](https://pub.dev/packages/shelf),
 configured to enable running with [Docker](https://www.docker.com/).
